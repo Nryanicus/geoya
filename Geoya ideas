@@ -1,0 +1,75 @@
+Campaigns
+================
+All camps end on player death
+
+Quartos Camp
+------------
+Military Gov, ends when invaders take capitol
+
+
+Triari Camp
+------------
+Triumvirate, ends when a trygon dies, the Triumvirate is broken (through death or political decision)
+
+
+Monoi Camp
+------------
+City State Leader, autocracy or republic ends when IF gains control of your city (through assassination, coup or election)
+IF 'mancers are more powerful the more of them are present in a location (e.g. battlefield). On death they pass their powers to another IF 'mancer. Hence it may be tempting to have one
+
+
+Strategy Overworld
+================
+Faction Diplo mods:
+History - war (some like good enemies, usually neg), protection (common enemy), requests (we asked you do/don't do something, you obliged or not), previous Camp diplo mod
+Trade - patronage (do you hire us), supply (do you give us things we need), same system (barter vs currency)
+Shacial bonus - positive to same, Monoi dislike Tertari and vice versa
+Research & Infrastructure - factions like it when you develop mancy and infrastructure relevant to them
+
+Quartos roads only buildable in orthogonal directions. Tertari best road builders, but require civilisation first. Monoi not too bad either.
+
+Resources: iron, lumber, stone, food (crops, meat, fish), leather, luxury, mancy (gems, corpses - for necros, alchemy reagents, biner artefacts)
+
+Units and Commanders have training, experience and gear. Training gives abilities and occassional stat boosts (all). Experience gives morale boosts and if certain conditions are met, passive abilities (magic res, situational bonuses e.g. siege or terrain). Gear gives abilities and stat mods (attack, def, speed)
+
+Tactics Combat 
+================
+HoMM/Wesnoth-like combat. No grid. RPG elements for both armies and units. I.e. combat abilities for units, logistic or strategic ones for armies. E.g. flanking/formation bonus, special attacks, spells; travel speed, fortifications, scout range
+
+Troops have: morale, stamina, hp, number of troops, commanders. Speed, range, damage, attack, defense and special abilities.
+Commanders give bonuses and have their own abilities. Notably magic. Magic attacks bypass normal damage entirely.
+
+Battlefields have terrain, the player has imperfect information, LoS and only approximate info on unit status. Orders are scripted, but can be changed mid battle via magic or other comms systems (riders, flags, trumpets). Start of a battle orders are easy as the army is close, and battle has not begun. Orders become more difficult in melee, with low morale, and without a way to communication.
+
+Turn based.
+
+Misc
+=============
+
+Spellcasting mini-game:
+------------
+have 'a''w''d''f' 'SPACEBAR','RIGHTARROW''4''8''6''NUMPLUS' correspond to left and right hands.
+Each Glyph has a gesture. Gestures for moving where the next Glyph is placed. Compound glyphs are spells.
+Two hands for big glyphs; for smalle ones: one hand for direction, the other for glyph. Left hand can only point right, up. Right only left, down
+New spells unlocked through research. Fumbles give random effect (but same fumble gives the same effect)
+(optional) Get ~30 seconds to compose spell per round.
+
+Left + Right  + Effect
+__________________
+||.|| + ||.|| + earth
+|.|.| + |.|.| + fire 
+|..|. + .|..| + air
+.7..|| + ||... + water (make circle with thumb)
+..|.. + ..|.. + death (raised, insulting)
+....| + |.... + life (raised, praising)
+..||. + .||.. + left/right (point in direction)
+.||.. + ..||. + up/down (ditto)
+||||. + .|||| + rotate left/right (tilt hand)
+single clench-release to lock a location (paired with movement/rotation above)
+double clench-release to cast
+
+glyphs genned at game start. System where each big Glyph has "key points" where either a large or small glyph can go.
+Opposites cannot touch. Nonesensical gestures immediately fail spell (left and right, up and down, opposite glyphs). Unknown glyphs fizzle
+Give bonus for not using a guide (more power, etc.)
+
+Biner - glitches. Data corruption. "this app needs to close" on restarting stat damage, but new powerful biner spells

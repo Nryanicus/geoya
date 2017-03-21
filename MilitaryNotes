@@ -1,0 +1,31 @@
+training levels = {1:"Recruit",2:"Drilled",3:"Trained",4:"Practiced",5:"Elite"}
+experience levels = {1:"Green",2:"Blooded",3:"Proven",4:"Hardened",5:"Veteran"}
+
+Each level *2 as hard to get as previous
+
+Unit Training Bonuses:
+-----------------
+Basic Training - +1 boost across the board
+Advanced X Training - boosts one stat
+Formation Fighting - Flanking and Support Bonuses
+Charge - Ability
+Volley - Ability
+Brace - Ability, gives +1 Range and one-round Atk bonus
+
+Unit Experience Bonuses:
+-----------------
+Combat Familiarity - +1 Morale, stackable
+Mancerguard - +10% across the board when commander is a Mancer
+Stalwart - +2 Def when taking a charge, reqs defeating a unit that charged them
+Forest/Mountain Fighters - +10% when fighting in favoured terrain
+Stormers - +2 Morale in sieges, reqs being part of an army that takes a fort by storm
+
+Unit Abilities:
+-----------------
+Charge
+Volley
+Brace
+First Strike
+Tortoise
+
+ 
