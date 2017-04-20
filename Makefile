@@ -1,13 +1,15 @@
+# LIBS = -Ilib/json/src -lsfml-graphics -lsfml-window -lsfml-system
+LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+
 all:
-	g++ -c -Og -std=c++11 *.hpp *.cpp
-	g++ *.o -o main -lsfml-graphics -lsfml-window -lsfml-system # -lBox2D -Llib/ -lpoly2tri -lclipper
+	g++ -std=c++11 *.hpp *.cpp -o main $(LIBS)
 opt:
-	g++ -O3 -std=c++11 *.hpp *.cpp -o main_opt -lsfml-graphics -lsfml-window -lsfml-system # -lBox2D -Llib/ -lpoly2tri -lclipper
+	g++ -O3 -std=c++11 *.hpp *.cpp -o main_opt $(LIBS)
 debug:
-	g++ -g -Og -std=c++11 *.hpp *.cpp -o debug -lsfml-graphics -lsfml-window -lsfml-system # -lBox2D -Llib/ -lpoly2tri -lclipper
+	g++ -g -Og -std=c++11 *.hpp *.cpp -o debug $(LIBS)
 warnings:
-	g++ -g -Og -std=c++11 -Wall -Wno-reorder *.hpp *.cpp -o debug -lsfml-graphics -lsfml-window -lsfml-system # -lBox2D -Llib/ -lpoly2tri -lclipper
+	g++ -g -Og -std=c++11 -Wall -Wno-reorder *.hpp *.cpp -o debug $(LIBS)
 gprof:
-	g++ -pg -O3 -std=c++11 *.hpp *.cpp -o debug_gprof -lsfml-graphics -lsfml-window -lsfml-system # -lBox2D -Llib/ -lpoly2tri -lclipper
+	g++ -pg -O3 -std=c++11 *.hpp *.cpp -o debug_gprof $(LIBS)
 
 .PHONY: all debug opt warnings gprog

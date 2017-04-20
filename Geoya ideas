@@ -41,6 +41,8 @@ Commanders give bonuses and have their own abilities. Notably magic. Magic attac
 
 Battlefields have terrain, the player has imperfect information, LoS and only approximate info on unit status. Orders are scripted, but can be changed mid battle via magic or other comms systems (riders, flags, trumpets). Start of a battle orders are easy as the army is close, and battle has not begun. Orders become more difficult in melee, with low morale, and without a way to communication.
 
+Player is present on the battlefield, rogue-like field-of-vision. Scouting will give a fog-of-war layout of the area, ambush or other "surprise" battles do not. Actions are input, then the turn is resolved. All orders/action must be input within a set amount of time (30 second?) spells included.
+
 Turn based.
 
 Misc
@@ -59,7 +61,7 @@ __________________
 ||.|| + ||.|| + earth
 |.|.| + |.|.| + fire 
 |..|. + .|..| + air
-.7..|| + ||... + water (make circle with thumb)
+...|| + ||... + water (make circle with thumb)
 ..|.. + ..|.. + death (raised, insulting)
 ....| + |.... + life (raised, praising)
 ..||. + .||.. + left/right (point in direction)

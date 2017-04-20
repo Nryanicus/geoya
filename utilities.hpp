@@ -6,81 +6,8 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include "Vector.hpp"
 #include "constants.hpp"
-
-class Vector
-{
-public:
-    float x,y;
-    Vector() : x(0), y(0) {}
-    Vector(float x, float y) : x(x), y(y) {}
-    Vector(double x, double y) : x(x), y(y) {}
-    Vector(int x, int y) : x((float)x), y((float)y) {}
-    Vector(sf::Vector2f v) : x(v.x), y(v.y) {}
-    Vector(sf::Vector2i v) : x((float)v.x), y((float)v.y) {}
-    Vector operator-(Vector o)
-    {
-        return Vector(x-o.x, y-o.y);
-    }
-    Vector operator-=(Vector o)
-    {
-        x -= o.x;
-        y -= o.y;
-        return *this;
-    }
-    Vector operator+(Vector o)
-    {
-        return Vector(x+o.x, y+o.y);
-    }
-    Vector operator+=(Vector o)
-    {
-        x += o.x;
-        y += o.y;
-        return *this;
-    }
-    Vector operator*(float m)
-    {
-        return Vector(m*x, m*y);
-    }
-    Vector operator*=(float m)
-    {
-        x *= m;
-        y *= m;
-        return *this;
-    }    
-    Vector operator/(float m)
-    {
-        return Vector(x/m, y/m);
-    }
-    Vector operator/=(float m)
-    {
-        x /= m;
-        y /= m;
-        return *this;
-    }
-    float magnitude()
-    {
-        return sqrt(x*x + y*y);
-    }
-    float magnitude_squared()
-    {
-        return x*x + y*y;
-    }
-    Vector normalise()
-    {
-        float m = magnitude();
-        return (*this)/m;
-    }
-    float dot(Vector other)
-    {
-        return x*other.x + y*other.y;
-    }
-    Vector projection(Vector other)
-    {
-        return other * dot(other)/other.dot(other);
-    }
-
-};
 
 std::ostream& operator<<(std::ostream& os, const Vector& v);
 
@@ -132,5 +59,9 @@ sf::RectangleShape line_with_thickness(sf::Vector2f p1, sf::Vector2f p2, float t
 //////////////////////
 
 int random_int(int a, int b);
+
+sf::IntRect spritesheet_rect(std::string sprite, std::string frame);
+
+sf::Vector2f spritesheet_offset(std::string sprite, std::string frame);
 
 #endif

@@ -62,6 +62,7 @@ TOP_SPRITESHEET = {
 "TopBack1Close4": (1729, 2723, 53, 151, 558, 541),
 "TopBack1Close5": (378, 2079, 53, 144, 558, 550),
 }
+
 TOPFRONT_SPRITESHEET = {
 "FrontLife5": (0, 0, 200, 628, 366, 236),
 "FrontLife4": (200, 0, 252, 624, 342, 254),
