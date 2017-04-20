@@ -48,9 +48,9 @@ const double GLYPH_DRAW_TIME = 2.0;
 
 const std::vector<Vector> EARTHSQUARE = {
     Vector(-1, 1),
-    Vector(-1, -1),
     Vector(1, 1),
     Vector(1, -1),
+    Vector(-1, -1),
 };
 
 const std::vector<Vector> WATERCIRCLE = {
@@ -89,9 +89,9 @@ const std::vector<Vector> WATERCIRCLE = {
 };
 
 const std::vector<Vector> FIRETRIANGLE = {
-    Vector(-0.5, 0.5),
-    Vector(0.0, 1.0),
-    Vector(0.5, 0.5),
+    Vector(-0.5, 0.433),
+    Vector(0.0, -0.433),
+    Vector(0.5, 0.433),
 };
 
 const std::vector<Vector> AIRLINES = {
@@ -268,17 +268,12 @@ const std::vector<Vector> AIRLINES_DRAW = {
 
 const std::vector<Vector> DEATHCROSS = {
     Vector(-1, 1),
-    Vector(1, 1),
-    Vector(-1, -1),
     Vector(1, -1),
+    Vector(-1, -1),
+    Vector(1, 1),
 };
 
 const std::vector<Vector> LIFESQUIGGLE = {
-    Vector(-0.4115, -0.1704),
-    Vector(-0.2979, -0.1593),
-    Vector(-0.1888, -0.1261),
-    Vector(-0.0881, -0.0724),
-    Vector(0.0, 0.0),
     Vector(0.0, 0.8230),
     Vector(-0.0881, 0.8954),
     Vector(-0.1888, 0.9492),
@@ -299,32 +294,36 @@ const std::vector<Vector> LIFESQUIGGLE = {
     Vector(-0.7348, -0.0724),
     Vector(-0.6342, -0.1261),
     Vector(-0.5250, -0.1593),
-    Vector(0.4115, -0.9935),
-    Vector(0.5250, -0.9823),
-    Vector(0.6342, -0.9492),
-    Vector(0.7348, -0.8954),
-    Vector(0.8230, -0.8230),
-    Vector(0.8954, -0.7348),
-    Vector(0.9492, -0.6342),
-    Vector(0.9823, -0.5250),
-    Vector(0.9935, -0.4115),
-    Vector(0.9823, -0.2979),
-    Vector(0.9492, -0.1888),
-    Vector(0.8954, -0.0881),
-    Vector(0.8230, 0.0),
-    Vector(0.7348, 0.0724),
-    Vector(0.6342, 0.1261),
-    Vector(0.5250, 0.1593),
-    Vector(0.4115, 0.1704),
-    Vector(0.2979, 0.1593),
-    Vector(0.1888, 0.1261),
+    Vector(-0.4115, -0.1704),
+    Vector(-0.2979, -0.1593),
+    Vector(-0.1888, -0.1261),
+    Vector(-0.0881, -0.0724),
+    Vector(0.0, 0.0),
     Vector(0.0881, 0.0724),
-    Vector(0.0, -0.8230),
-    Vector(0.0881, -0.8954),
-    Vector(0.1888, -0.9492),
+    Vector(0.1888, 0.1261),
+    Vector(0.2979, 0.1593),
+    Vector(0.4115, 0.1704),
+    Vector(0.5250, 0.1593),
+    Vector(0.6342, 0.1261),
+    Vector(0.7348, 0.0724),
+    Vector(0.8230, 0.0),
+    Vector(0.8954, -0.0881),
+    Vector(0.9492, -0.1888),
+    Vector(0.9823, -0.2979),
+    Vector(0.9935, -0.4115),
+    Vector(0.9823, -0.5250),
+    Vector(0.9492, -0.6342),
+    Vector(0.8954, -0.7348),
+    Vector(0.8230, -0.8230),
+    Vector(0.7348, -0.8954),
+    Vector(0.6342, -0.9492),
+    Vector(0.5250, -0.9823),
+    Vector(0.4115, -0.9935),
     Vector(0.2979, -0.9823),
+    Vector(0.1888, -0.9492),
+    Vector(0.0881, -0.8954),
+    Vector(0.0, -0.8230),
 };
-
 
 
 const std::unordered_map<std::string, std::array<int, 6>> FrontSpriteOffsets = {
@@ -408,7 +407,6 @@ const std::unordered_map<std::string, std::array<int, 6>> FrontSpriteOffsets = {
     {"Front4Close3", {2267, 320, 53, 262, 613, 654}},
     {"Front4Close4", {1656, 991, 53, 214, 613, 655}},
     {"Front4Close5", {2855, 1628, 53, 195, 613, 656}},
-
 };
 
 const std::unordered_map<std::string, std::array<int, 6>> TopBackSpriteOffsets = {

@@ -36,8 +36,6 @@ float dot_product(sf::Vector2f* v1, sf::Vector2f* v2);
 // in degrees
 float angle_between(sf::Vector2f* v1, sf::Vector2f* v2);
 
-sf::RectangleShape line_with_thickness(sf::Vector2f p1, sf::Vector2f p2, float thickness, int trans1=255, int trans2=255);
-
 //////////////////////
 /* Box2D Vector Ops */
 //////////////////////

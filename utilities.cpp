@@ -85,17 +85,6 @@ float angle_between(sf::Vector2f* v1, sf::Vector2f* v2)
     return acos(dot_product(&v_1, &v_2)) * RADIANS_TO_DEGREES;
 }
 
-//untested
-sf::RectangleShape line_with_thickness(sf::Vector2f p1, sf::Vector2f p2, float thickness, int trans1, int trans2)
-{
-    sf::Vector2f diff = p2-p1;
-    float d = magnitude(&diff);
-    sf::RectangleShape rect(sf::Vector2f(d, thickness));
-    rect.setPosition(p1-sf::Vector2f(0, thickness/2));
-    rect.setRotation(angle_between(&p1, &p2));
-    return rect;
-}
-
 //////////////////////
 /* Box2D Vector Ops */
 //////////////////////
