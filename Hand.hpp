@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+#include <set>
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
 #include "GlyphDrawer.hpp"
@@ -18,7 +19,35 @@ enum class FingerState {Opening, Open, Closing, Closed};
 enum class HandState {None, WindUp, Hold, WindDown, Cancel};
 enum class Gesture {None, Air, Fire, Earth, Water, Life, Death, Vert, Horz, Cast, Rotate};
 
-const std::unordered_map<Gesture, std::vector<Vector>> GESTURE_TO_VERTICES = {
+const std::set<Gesture> DRAWABLE_GESTURE = {
+    Gesture::Air,
+    Gesture::Fire,
+    Gesture::Earth,
+    Gesture::Water,
+    Gesture::Life,
+    Gesture::Death,
+};
+
+const std::set<Gesture> TWO_LINE_GESTURE = {
+    Gesture::Air,
+    Gesture::Death,
+};
+
+static bool is_drawable(Gesture g)
+{
+    return DRAWABLE_GESTURE.find(g) != DRAWABLE_GESTURE.end();
+}
+
+const std::unordered_map<Gesture, std::vector<Vector>> GESTURE_TO_MOVE = {
+    {Gesture::Air, AIRLINES_MOVE},
+    {Gesture::Fire, FIRETRIANGLE},
+    {Gesture::Earth, EARTHSQUARE},
+    {Gesture::Water, WATERCIRCLE},
+    {Gesture::Life, LIFESQUIGGLE},
+    {Gesture::Death, DEATHCROSS},
+};
+
+const std::unordered_map<Gesture, std::vector<Vector>> GESTURE_TO_GLYPH = {
     {Gesture::Air, AIRLINES},
     {Gesture::Fire, FIRETRIANGLE},
     {Gesture::Earth, EARTHSQUARE},

@@ -15,7 +15,7 @@ public:
     Vector(int x, int y) : x((float)x), y((float)y) {}
     Vector(sf::Vector2f v) : x(v.x), y(v.y) {}
     Vector(sf::Vector2i v) : x((float)v.x), y((float)v.y) {}
-    Vector operator-(Vector o)
+    Vector operator-(Vector o) const
     {
         return Vector(x-o.x, y-o.y);
     }
@@ -25,7 +25,15 @@ public:
         y -= o.y;
         return *this;
     }
-    Vector operator+(Vector o)
+    bool operator==(Vector o) const
+    {
+        return x==o.x&&y==o.y;
+    }
+    bool operator!=(Vector o) const
+    {
+        return !(*this == o);
+    }
+    Vector operator+(Vector o) const
     {
         return Vector(x+o.x, y+o.y);
     }
@@ -35,7 +43,7 @@ public:
         y += o.y;
         return *this;
     }
-    Vector operator*(float m)
+    Vector operator*(float m) const
     {
         return Vector(m*x, m*y);
     }
@@ -45,7 +53,7 @@ public:
         y *= m;
         return *this;
     }    
-    Vector operator/(float m)
+    Vector operator/(float m) const
     {
         return Vector(x/m, y/m);
     }

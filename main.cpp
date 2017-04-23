@@ -48,29 +48,53 @@ int main(int argc, char* argv[])
                 if (event.key.code == sf::Keyboard::Escape)
                     window.close();
 
-                if (event.key.code == sf::Keyboard::LShift)
+                // Left Hand
+                if (event.key.code == sf::Keyboard::LControl)
                     glyph_drawer.input(true, 4, true);
-                if (event.key.code == sf::Keyboard::A)
+                if (event.key.code == sf::Keyboard::LShift)
                     glyph_drawer.input(true, 3, true);
-                if (event.key.code == sf::Keyboard::S)
+                if (event.key.code == sf::Keyboard::Z)
                     glyph_drawer.input(true, 2, true);
-                if (event.key.code == sf::Keyboard::D)
+                if (event.key.code == sf::Keyboard::X)
                     glyph_drawer.input(true, 1, true);
-                if (event.key.code == sf::Keyboard::Space)
+                if (event.key.code == sf::Keyboard::LAlt)
                     glyph_drawer.input(true, 0, true);
+                // RAlt Hand
+                if (event.key.code == sf::Keyboard::RControl)
+                    glyph_drawer.input(false, 4, true);
+                if (event.key.code == sf::Keyboard::RShift)
+                    glyph_drawer.input(false, 3, true);
+                if (event.key.code == sf::Keyboard::Slash)
+                    glyph_drawer.input(false, 2, true);
+                if (event.key.code == sf::Keyboard::Period)
+                    glyph_drawer.input(false, 1, true);
+                if (event.key.code == sf::Keyboard::RAlt)
+                    glyph_drawer.input(false, 0, true);
             }
             if (event.type == sf::Event::KeyReleased)
             {
-                if (event.key.code == sf::Keyboard::LShift)
+                // Left hand
+                if (event.key.code == sf::Keyboard::LControl)
                     glyph_drawer.input(true, 4, false);
-                if (event.key.code == sf::Keyboard::A)
+                if (event.key.code == sf::Keyboard::LShift)
                     glyph_drawer.input(true, 3, false);
-                if (event.key.code == sf::Keyboard::S)
+                if (event.key.code == sf::Keyboard::Z)
                     glyph_drawer.input(true, 2, false);
-                if (event.key.code == sf::Keyboard::D)
+                if (event.key.code == sf::Keyboard::X)
                     glyph_drawer.input(true, 1, false);
-                if (event.key.code == sf::Keyboard::Space)
+                if (event.key.code == sf::Keyboard::LAlt)
                     glyph_drawer.input(true, 0, false);
+                // RAlt Hand
+                if (event.key.code == sf::Keyboard::RControl)
+                    glyph_drawer.input(false, 4, false);
+                if (event.key.code == sf::Keyboard::RShift)
+                    glyph_drawer.input(false, 3, false);
+                if (event.key.code == sf::Keyboard::Slash)
+                    glyph_drawer.input(false, 2, false);
+                if (event.key.code == sf::Keyboard::Period)
+                    glyph_drawer.input(false, 1, false);
+                if (event.key.code == sf::Keyboard::RAlt)
+                    glyph_drawer.input(false, 0, false);
             }
         }
         time = clock.restart().asSeconds();

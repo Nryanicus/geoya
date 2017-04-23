@@ -50,9 +50,10 @@ void Hand::draw(sf::RenderTarget* target)
         draw_sprite.setTexture(canvas.getTexture());
         dirty = false;
     }
+    draw_sprite.setOrigin(draw_sprite.getTextureRect().width/2, draw_sprite.getTextureRect().height/2);
     draw_sprite.setPosition(position.to_sfml());
     if (right)
-        draw_sprite.setScale(-1, 1);
+        draw_sprite.setScale(-1.0, 1.0);
     target->draw(draw_sprite);
 }
 
