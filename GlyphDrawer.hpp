@@ -5,41 +5,52 @@
 #include <cmath>
 #include <string>
 #include <iostream>
-#include <deque>
 #include <unordered_map>
 #include <stdexcept>
 #include <SFML/Graphics.hpp>
+#include "Glyph.hpp"
 #include "Hand.hpp"
 #include "constants.hpp"
 #include "utilities.hpp"
 
 class Hand;
 
-const Vector BASE_POS(WIDTH/2, HEIGHT-500);
-const Vector RIGHTHAND_POS(500, 0);
-const Vector LEFTHAND_POS(-500, 0);
-const Vector GLYPH_POS(0, -250);
-const double GLYPH_SCALE = 100.0;
-const double GLYPH_MOVEMENT_SCALE = 100.0;
-const double GLYPH_THICKNESS = 10.0;
+static std::string hs2s(HandDataState s)
+{
+    if (s == HandDataState::None)
+        return "None";
+    if (s == HandDataState::Wandering)
+        return "Wandering";
+    if (s == HandDataState::Holding)
+        return "Holding";
+    if (s == HandDataState::Moving)
+        return "Moving";
+    if (s == HandDataState::Drawing)
+        return "Drawing";
+    if (s == HandDataState::Modifying)
+        return "Modifying";
+    assert(false);
+    return "";
+}
 
 class HandData
 {
 public:
+    HandData()
+    : state(HandDataState::None), glyph_outline(NULL)
+    {}
+
+    HandDataState state;
+
     // for wandering
-    Vector current;
-    Vector start;
-    Vector end;
-    double time;
-    double time_elapsed;
+    Interp2D hand_translate;
 
     // for drawing
+    Vector current;
     Vector base_pos;
-    std::vector<Vector> glyph_path; 
     std::vector<Vector> move_path; 
-    sf::RenderTexture glyph_outline;
-    bool prev_valid;
-    Vector prev_glyph_draw_point;
+    GlyphOutline* glyph_outline;
+    Glyph* current_glyph;
 };
 
 class GlyphDrawer
@@ -54,8 +65,7 @@ private:
 
     Vector position;
 
-    sf::Sprite draw_sprite;
-    sf::RenderTexture glyph;
+    std::vector<Glyph*> glyphs;
 
 public:
 

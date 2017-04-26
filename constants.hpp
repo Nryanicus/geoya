@@ -4,6 +4,7 @@
 #include <random>
 #include <unordered_map>
 #include <array>
+#include <set>
 #include <SFML/Graphics.hpp>
 #include "Vector.hpp"
 
@@ -27,7 +28,7 @@ const sf::Color FIRE_COLOUR = sf::Color(128, 0, 0);
 const sf::Color WATER_COLOUR = sf::Color(0, 0, 128);
 const sf::Color EARTH_COLOUR = sf::Color(0, 128, 0);
 const sf::Color LIFE_COLOUR = sf::Color(255, 212, 42);
-const sf::Color DEATH_COLOUR = sf::Color(0, 0, 0);
+const sf::Color DEATH_COLOUR = Grey;//sf::Color(0, 0, 0);
 
 const float RADIANS_TO_DEGREES = 180/pi;
 const float DEGREES_TO_RADIANS = pi/180;
@@ -45,6 +46,19 @@ const int MAX_FRAMES = 4;
 const double FINGER_FRAME_TIME = 1.0/24.0;
 const double GESTURE_FRAME_TIME = 1.0/12.0;
 const double GLYPH_DRAW_TIME = 2.5;
+
+const Vector BASE_POS(WIDTH/2, HEIGHT-500);
+const Vector RIGHTHAND_POS(500, 0);
+const Vector LEFTHAND_POS(-500, 0);
+const Vector GLYPH_POS(0, -250);
+const double GLYPH_SCALE = 100.0;
+const double GLYPH_MOVEMENT_SCALE = 100.0;
+const double GLYPH_THICKNESS = 10.0;
+
+enum class FingerState {Opening, Open, Closing, Closed};
+enum class HandState {None, WindUp, Hold, WindDown, Cancel};
+enum class Gesture {None, Air, Fire, Earth, Water, Life, Death, Vert, Horz, Cast, Rotate};
+enum class HandDataState {None, Wandering, Holding, Moving, Drawing, Modifying};
 
 const std::vector<Vector> EARTHSQUARE = {
     Vector(-1, 1),
@@ -275,6 +289,46 @@ const std::vector<Vector> LIFESQUIGGLE = {
     Vector(0.0, -0.8230),
 };
 
+const std::set<Gesture> DRAWABLE_GESTURE = {
+    Gesture::Air,
+    Gesture::Fire,
+    Gesture::Earth,
+    Gesture::Water,
+    Gesture::Life,
+    Gesture::Death,
+};
+
+const std::set<Gesture> TWO_LINE_GESTURE = {
+    Gesture::Air,
+    Gesture::Death,
+};
+
+const std::unordered_map<Gesture, std::vector<Vector>> GESTURE_TO_MOVE = {
+    {Gesture::Air, AIRLINES_MOVE},
+    {Gesture::Fire, FIRETRIANGLE},
+    {Gesture::Earth, EARTHSQUARE},
+    {Gesture::Water, WATERCIRCLE},
+    {Gesture::Life, LIFESQUIGGLE},
+    {Gesture::Death, DEATHCROSS},
+};
+
+const std::unordered_map<Gesture, std::vector<Vector>> GESTURE_TO_GLYPH = {
+    {Gesture::Air, AIRLINES},
+    {Gesture::Fire, FIRETRIANGLE},
+    {Gesture::Earth, EARTHSQUARE},
+    {Gesture::Water, WATERCIRCLE},
+    {Gesture::Life, LIFESQUIGGLE},
+    {Gesture::Death, DEATHCROSS},
+};
+
+const std::unordered_map<Gesture, sf::Color> GESTURE_TO_COLOUR = {
+    {Gesture::Air, AIR_COLOUR},
+    {Gesture::Fire, FIRE_COLOUR},
+    {Gesture::Earth, EARTH_COLOUR},
+    {Gesture::Water, WATER_COLOUR},
+    {Gesture::Life, LIFE_COLOUR},
+    {Gesture::Death, DEATH_COLOUR},
+};
 
 const std::unordered_map<std::string, std::array<int, 6>> FrontSpriteOffsets = {
     {"FrontLife5", {0, 0, 200, 628, 366, 236}},

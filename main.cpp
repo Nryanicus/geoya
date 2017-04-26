@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
         time = clock.restart().asSeconds();
         glyph_drawer.update(time);
 
-        window.clear(Grey);
+        window.clear(DarkGrey);
         glyph_drawer.draw(&window);
         window.display();
 

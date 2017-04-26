@@ -9,6 +9,122 @@
 #include "Vector.hpp"
 #include "constants.hpp"
 
+static bool is_drawable(Gesture g)
+{
+    return DRAWABLE_GESTURE.find(g) != DRAWABLE_GESTURE.end();
+}
+
+static std::string gesture_to_sprite(Gesture s)
+{
+    if (s == Gesture::Air)
+        return "Air";
+    if (s == Gesture::Fire)
+        return "Fire";
+    if (s == Gesture::Earth)
+        return "Earth";
+    if (s == Gesture::Water)
+        return "Water";
+    if (s == Gesture::Life)
+        return "Life";
+    if (s == Gesture::Death)
+        return "Death";
+    if (s == Gesture::Vert)
+        return "Vert";
+    if (s == Gesture::Horz)
+        return "Horz";
+    if (s == Gesture::Cast)
+        return "Cast";
+    if (s == Gesture::Rotate)
+        return "Rotate";
+    assert(false);
+    return "";
+}
+
+static std::string g2s(Gesture s)
+{
+    if (s == Gesture::Air)
+        return "Air";
+    if (s == Gesture::Fire)
+        return "Fire";
+    if (s == Gesture::Earth)
+        return "Earth";
+    if (s == Gesture::Water)
+        return "Water";
+    if (s == Gesture::Life)
+        return "Life";
+    if (s == Gesture::Death)
+        return "Death";
+    if (s == Gesture::Vert)
+        return "Vert";
+    if (s == Gesture::Horz)
+        return "Horz";
+    if (s == Gesture::Cast)
+        return "Cast";
+    if (s == Gesture::Rotate)
+        return "Rotate";
+    if (s == Gesture::None)
+        return "None";
+    assert(false);
+    return "";
+}
+
+static std::string fs2s(FingerState s)
+{
+    if (s == FingerState::Opening)
+        return "Opening";
+    if (s == FingerState::Open)
+        return "Open";
+    if (s == FingerState::Closing)
+        return "Closing";
+    if (s == FingerState::Closed)
+        return "Closed";
+    assert(false);
+    return "";
+}
+
+static std::string hs2s(HandState s)
+{
+    if (s == HandState::None)
+        return "None";
+    if (s == HandState::WindUp)
+        return "WindUp";
+    if (s == HandState::Hold)
+        return "Hold";
+    if (s == HandState::WindDown)
+        return "WindDown";
+    if (s == HandState::Cancel)
+        return "Cancel";
+    assert(false);
+    return "";
+}
+
+template <class T> class Interpolation
+{
+public:
+    T start;
+    T end;
+    double time;
+    double time_elapsed;
+
+    Interpolation(){}
+    Interpolation(T s, T e, double t)
+    : start(s), end(e), time(t)
+    {}
+    bool update(double dt)
+    {
+        time_elapsed += dt;
+        return time_elapsed >= time;
+    }
+    T get_point()
+    {
+        double r = time_elapsed/time;
+        return start*(1-r) + end*r;
+    }
+};
+
+typedef Interpolation<double> Interp1D;
+typedef Interpolation<Vector> Interp2D;
+
 std::ostream& operator<<(std::ostream& os, const Vector& v);
 
 //////////////////////
