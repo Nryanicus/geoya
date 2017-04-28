@@ -61,9 +61,26 @@ void GlyphDrawer::notify_hold(Hand* hand)
     else
     {
         hand_data[hand]->state = HandDataState::Holding;
-        std::cout << "modifying gesture" << std::endl;
         //TODO: Horz, Vert, Rotate, Cast
+
     }
+}
+
+bool GlyphDrawer::notify_cast(Hand* hand)
+{
+    if (hand == left_hand)
+        std::cout << "L:";
+    else
+        std::cout << "R:";
+    std::cout << " notify cast" << std::endl;
+    if (other_hand[hand]->hand_state == HandState::CastReady)
+    {
+        std::cout << "other is ready, casting" << std::endl;
+        other_hand[hand]->gesture = Gesture::Cast;
+        other_hand[hand]->hand_state = HandState::Casting;
+        return true;
+    }
+    return false;
 }
 
 void GlyphDrawer::notify_cancel(Hand* hand)

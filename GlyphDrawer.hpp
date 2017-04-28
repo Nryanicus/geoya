@@ -101,6 +101,7 @@ public:
     void notify_hold(Hand* hand);
     void notify_cancel(Hand* hand);
     void notify_winddown(Hand* hand);
+    bool notify_cast(Hand* hand);
 
     void draw(sf::RenderTarget* target);
 

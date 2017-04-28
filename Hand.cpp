@@ -25,7 +25,7 @@ void Hand::draw(sf::RenderTarget* target)
     {
         canvas.clear(Transparent);
 
-        if (hand_state == HandState::None)
+        if (hand_state == HandState::None || hand_state == HandState::CastReady)
         {
             for (int i=0; i<NUM_FINGERS; i++)
             {
@@ -65,6 +65,7 @@ void Hand::update(double dt)
     //     std::cout << i << ": " << fs2s(finger_states[i]) << " " << finger_times[i] << " " << finger_frames[i] << " | ";
     // std::cout << std::endl;
     // std::cout << "==================================" << std::endl;
+    if (hand_state == HandState::CastReady) return;
     if (hand_state == HandState::None)
     {
         for (int i=0; i<NUM_FINGERS; i++)
@@ -103,6 +104,19 @@ void Hand::update(double dt)
                         finger_frames[i] = MAX_FRAMES;
                         finger_states[i] = FingerState::Closed;
                         gesture = check_gesture();
+                        // Cast can only happen on closing fingers
+                        if (gesture == Gesture::Cast)
+                        {
+                            hand_state = HandState::CastReady;
+                            // if the other hand is ready to cast go ahead
+                            if (parent->notify_cast(this))
+                                hand_state = HandState::Casting;
+                            else
+                                gesture = Gesture::None;
+                            return;
+                        }
+                        else
+                            hand_state = HandState::None;
                         if (gesture != Gesture::None)
                         {
                             hand_state = HandState::WindUp;
@@ -122,7 +136,7 @@ void Hand::update(double dt)
         {
             hand_time -= GESTURE_FRAME_TIME;
             dirty = true;
-            if (hand_state == HandState::WindUp)
+            if (hand_state == HandState::WindUp || hand_state == HandState::Casting)
             {
                 hand_frame++;
                 if (hand_frame >= MAX_FRAMES)
@@ -225,13 +239,14 @@ Gesture Hand::check_gesture()
         out = Gesture::Rotate;
     }
     // TODO: check with controller to see if other hand is clenched too
-    // else if (finger_states[0] == FingerState::Closed &&
-    //     finger_states[1] == FingerState::Closed &&
-    //     finger_states[2] == FingerState::Closed &&
-    //     finger_states[3] == FingerState::Closed &&
-    //     finger_states[4] == FingerState::Closed)
-    // {
-    // }
+    else if (finger_states[0] == FingerState::Closed &&
+        finger_states[1] == FingerState::Closed &&
+        finger_states[2] == FingerState::Closed &&
+        finger_states[3] == FingerState::Closed &&
+        finger_states[4] == FingerState::Closed)
+    {
+        out = Gesture::Cast;
+    }
     return out;
 }
 
@@ -288,7 +303,12 @@ void Hand::input(int finger, bool in)
                 hand_time = 0;
                 parent->notify_winddown(this);
             }
-
         }
+    }
+    // check if we're no longer cast ready
+    else if (hand_state == HandState::CastReady && check_gesture() != Gesture::Cast)
+    {
+        std::cout << "no long cast read" << std::endl;
+        hand_state = HandState::None;
     }
 }

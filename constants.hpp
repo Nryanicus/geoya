@@ -56,7 +56,7 @@ const double GLYPH_MOVEMENT_SCALE = 100.0;
 const double GLYPH_THICKNESS = 10.0;
 
 enum class FingerState {Opening, Open, Closing, Closed};
-enum class HandState {None, WindUp, Hold, WindDown, Cancel};
+enum class HandState {None, WindUp, Hold, CastReady, Casting, WindDown, Cancel};
 enum class Gesture {None, Air, Fire, Earth, Water, Life, Death, Vert, Horz, Cast, Rotate};
 enum class HandDataState {None, Wandering, Holding, Moving, Drawing, Modifying};
 
