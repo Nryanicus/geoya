@@ -105,19 +105,36 @@ public:
     T end;
     double time;
     double time_elapsed;
+    InterpType type;
 
     Interpolation(){}
-    Interpolation(T s, T e, double t)
-    : start(s), end(e), time(t)
+    Interpolation(T s, T e, double t, InterpType ty=InterpType::Linear)
+    : start(s), end(e), time(t), type(ty)
     {}
     bool update(double dt)
     {
         time_elapsed += dt;
         return time_elapsed >= time;
     }
+
+    double get_bezier_ratio(double t,Vector p1, Vector p2)
+    {
+        Vector v = BEZIERSTART*pow(1-t, 3) + p1*3*pow(1-t,2)*t + p2*3*(1-t)*pow(t,2) + BEZIEREND*pow(t,3);
+        return v.y;
+    }
+
     T get_point()
     {
-        double r = time_elapsed/time;
+        double r;
+        double t = time_elapsed/time;
+        if (type == InterpType::Linear)
+            r = t;
+        else if (type == InterpType::CubicBezier)
+            r = get_bezier_ratio(t, CUBICBEZIER1, CUBICBEZIER2);
+        else if (type == InterpType::SineBezier)
+            r = get_bezier_ratio(t, SINEBEZIER1, SINEBEZIER2);
+        else
+            assert(false);
         return start*(1-r) + end*r;
     }
 };

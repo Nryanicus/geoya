@@ -13,7 +13,7 @@ public:
 
     // modifying
     bool translate_active;
-    Interp2D translate_interp;
+    // Interp2D translate_interp;
     bool scale_active;
     Interp1D scale_interp;
 
@@ -44,6 +44,28 @@ public:
         draw_sprite.setScale(scale, scale);
         draw_sprite.setRotation(rotation);
         target->draw(draw_sprite);
+    }
+
+    void update(double dt)
+    {
+        if (scale_active)
+        {
+            if (scale_interp.update(dt))
+                scale_active = false;
+            scale = scale_interp.get_point();
+        }
+    }
+
+    void reverse_scale()
+    {
+        if (scale_active)
+            scale_interp = Interp1D(scale_interp.get_point(), 1.0, GLYPH_DRAW_TIME-scale_interp.time_elapsed, InterpType::CubicBezier);
+    }
+
+    void set_scale_interp(double start=1.0, double end=2.0, double time=GLYPH_DRAW_TIME)
+    {
+        scale_active = true;
+        scale_interp = Interp1D(start, end, time, InterpType::CubicBezier);
     }
 };
 
@@ -79,7 +101,7 @@ public:
         {
             Vector prev = glyph_path[0];
             // this is almost certainly only going to be the first line, or nothing at all
-            for (int i=1; i<floor(r); i++)
+            for (int i=1; i<ceil(r); i++)
             {
                 Vector p1 = ((prev+Vector(1.1,1.1))*GLYPH_SCALE);
                 Vector p2 = ((glyph_path.at(i)+Vector(1.1,1.1))*GLYPH_SCALE);

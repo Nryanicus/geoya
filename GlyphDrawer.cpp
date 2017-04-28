@@ -20,6 +20,8 @@ GlyphDrawer::~GlyphDrawer()
 {
     delete left_hand;
     delete right_hand;
+    for (int i=0; i<glyphs.size(); i++)
+        delete glyphs[i];
 }
 
 void GlyphDrawer::notify_windup(Hand* hand)
@@ -40,13 +42,13 @@ void GlyphDrawer::notify_hold(Hand* hand)
     if (is_drawable(hand->gesture))
     {
         hand_data[hand]->move_path = GESTURE_TO_MOVE.at(hand->gesture);
-        if (hand->gesture == other_hand[hand]->gesture)
+        if (hand->gesture == other_hand[hand]->gesture 
+            && (hand_data[other_hand[hand]]->state == HandDataState::Drawing || hand_data[other_hand[hand]]->state == HandDataState::Holding))
         {
-            std::cout << "other gesture same, modifying" << std::endl;
             hand_data[hand]->state = HandDataState::Modifying;
             HandData* other = hand_data[other_hand[hand]];
-            // TODO: scale
-            // other->glyph_scale = Interp1D(1.0, 2.0, GLYPH_DRAW_TIME);
+            other->glyph_outline->set_scale_interp();
+            other->current_glyph->set_scale_interp();
             return;
         }
         hand_data[hand]->state = HandDataState::Drawing;
@@ -58,7 +60,7 @@ void GlyphDrawer::notify_hold(Hand* hand)
     }
     else
     {
-        hand_data[hand]->state = HandDataState::Modifying;
+        hand_data[hand]->state = HandDataState::Holding;
         std::cout << "modifying gesture" << std::endl;
         //TODO: Horz, Vert, Rotate, Cast
     }
@@ -71,24 +73,38 @@ void GlyphDrawer::notify_cancel(Hand* hand)
 
 void GlyphDrawer::notify_winddown(Hand* hand)
 {
-    hand_data[hand]->move_path.clear();
-    hand_data[hand]->glyph_outline->clear();
-
+    // only possible mod here is Scale as others happen instantaneously
     // cancel on-going mod, we're modding other hand
-    if (hand_data[hand]->state == HandDataState::Modifying && hand_data[other_hand[hand]]->state == HandDataState::Modifying)
+    HandData* other = hand_data[other_hand[hand]];
+    if (hand_data[hand]->state == HandDataState::Modifying 
+        && (other->state == HandDataState::Drawing || other->state == HandDataState::Holding))
     {
-
+        other->glyph_outline->reverse_scale();
+        other->current_glyph->reverse_scale();
     }
     // cancel on-going mod, other hand is modding us
-    if (hand_data[other_hand[hand]]->state == HandDataState::Modifying && hand_data[hand]->state == HandDataState::Modifying)
+    else if (other->state == HandDataState::Modifying 
+        && (hand_data[hand]->state == HandDataState::Drawing || hand_data[hand]->state == HandDataState::Holding))
     {
-
+        other->swap(hand_data[hand], hand->gesture);
+        delete hand_data[hand]->current_glyph;
+        hand_data[hand]->glyph_outline->clear();
+        // remove the now-invalid glyph
+        glyphs.pop_back();
+        // add new one
+        glyphs.push_back(other->current_glyph);
+    }
+    else
+    {
+        hand_data[hand]->move_path.clear();
+        if (hand_data[hand]->glyph_outline)
+            hand_data[hand]->glyph_outline->clear();
     }
 
     hand_data[hand]->state = HandDataState::Moving;
     double time = std::min( 5*GESTURE_FRAME_TIME, 0.41);
     if (time <= 0) time = 0.1;
-    hand_data[hand]->hand_translate = Interp2D(hand_data[hand]->current, Vector(0, 0), time);
+    // hand_data[hand]->hand_translate = Interp2D(hand_data[hand]->current, Vector(0, 0), time);
 }
 
 void GlyphDrawer::draw(sf::RenderTarget* target)
@@ -129,12 +145,13 @@ void GlyphDrawer::update(double dt)
     {
         Vector pos = position + hand_data[hand]->base_pos;
         // move hand along Gesture path, colour in Glyph as hand travels
-        if (hand_data[hand]->state == HandDataState::Drawing)
+        if (hand_data[hand]->state == HandDataState::Drawing || hand_data[hand]->state == HandDataState::Modifying)
         {
             // move
             double r = hand->hand_time/GLYPH_DRAW_TIME*(hand_data[hand]->move_path.size()-1);
             if (r > hand_data[hand]->move_path.size()-1)
                 r = hand_data[hand]->move_path.size()-1;
+            // std::cout << hand_data[hand]->move_path.size() << std::endl;
             Vector p1 = hand_data[hand]->move_path[floor(r)] * GLYPH_MOVEMENT_SCALE;
             Vector p2 = hand_data[hand]->move_path[ceil(r)] * GLYPH_MOVEMENT_SCALE;
             double r_d = r - floor(r);
@@ -143,8 +160,10 @@ void GlyphDrawer::update(double dt)
             pos += p;
 
             // draw
-            hand_data[hand]->current_glyph->incremental_draw(hand->hand_time);
+            if (hand_data[hand]->state == HandDataState::Drawing)
+                hand_data[hand]->current_glyph->incremental_draw(hand->hand_time);
 
+            // if we're done, change state
             if (hand->hand_time >= GLYPH_DRAW_TIME)
                 hand_data[hand]->state = HandDataState::Holding;
         }
@@ -163,7 +182,11 @@ void GlyphDrawer::update(double dt)
         }
 
         hand->position = pos;
+        if (hand_data[hand]->glyph_outline)
+            hand_data[hand]->glyph_outline->update(dt);
     }
+    for (auto glyph: glyphs)
+        glyph->update(dt);
     // update hands
     left_hand->update(dt);
     right_hand->update(dt);

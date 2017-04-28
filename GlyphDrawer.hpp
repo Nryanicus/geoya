@@ -36,9 +36,33 @@ static std::string hs2s(HandDataState s)
 class HandData
 {
 public:
+
     HandData()
     : state(HandDataState::None), glyph_outline(NULL)
     {}
+
+    // take on glyph other is currently drawing
+    void swap(HandData* other, Gesture gesture)
+    {
+        state = HandDataState::Drawing;
+        current_glyph = new Glyph(gesture);
+        current_glyph->scale = other->current_glyph->scale_interp.get_point();
+        current_glyph->scale_active = true;
+        current_glyph->scale_interp = other->current_glyph->scale_interp;
+        current_glyph->reverse_scale();
+        
+        glyph_outline = new GlyphOutline(gesture);
+        glyph_outline->scale = other->glyph_outline->scale_interp.get_point();
+        glyph_outline->scale_active = true;
+        glyph_outline->scale_interp = other->glyph_outline->scale_interp;
+        glyph_outline->reverse_scale();
+    }
+
+    ~HandData()
+    {
+        if (glyph_outline)
+            delete glyph_outline;
+    }
 
     HandDataState state;
 

@@ -60,6 +60,16 @@ enum class HandState {None, WindUp, Hold, WindDown, Cancel};
 enum class Gesture {None, Air, Fire, Earth, Water, Life, Death, Vert, Horz, Cast, Rotate};
 enum class HandDataState {None, Wandering, Holding, Moving, Drawing, Modifying};
 
+enum class InterpType {Linear, CubicBezier, SineBezier};
+const Vector BEZIERSTART = Vector(0.0,  0.0);
+const Vector BEZIEREND = Vector(1.0,  1.0);
+
+const Vector CUBICBEZIER1 = Vector(0.85, 0.0);
+const Vector CUBICBEZIER2 = Vector(0.15, 1.0);
+
+const Vector SINEBEZIER1 = Vector(0.5,  0.0);
+const Vector SINEBEZIER2 = Vector(0.7, 0.7);
+
 const std::vector<Vector> EARTHSQUARE = {
     Vector(-1, 1),
     Vector(1, 1),
