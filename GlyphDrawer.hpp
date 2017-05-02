@@ -41,17 +41,6 @@ public:
     : state(HandDataState::None)
     {}
 
-    // take on glyph other is currently drawing
-    void swap(HandData* other, Gesture gesture)
-    {
-        state = HandDataState::Drawing;
-        current_glyph = new Glyph(gesture);
-        current_glyph->scale = other->current_glyph->scale_interp.get_point();
-        current_glyph->scale_active = true;
-        current_glyph->scale_interp = other->current_glyph->scale_interp;
-        current_glyph->reverse_scale();
-    }
-
     HandDataState state;
 
     // for wandering

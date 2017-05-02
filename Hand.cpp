@@ -307,8 +307,5 @@ void Hand::input(int finger, bool in)
     }
     // check if we're no longer cast ready
     else if (hand_state == HandState::CastReady && check_gesture() != Gesture::Cast)
-    {
-        std::cout << "no long cast read" << std::endl;
         hand_state = HandState::None;
-    }
 }

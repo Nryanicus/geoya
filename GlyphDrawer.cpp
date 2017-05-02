@@ -31,7 +31,9 @@ void GlyphDrawer::notify_windup(Hand* hand)
     if (is_drawable(hand->gesture))
         end = GESTURE_TO_MOVE.at(hand->gesture)[0] * GLYPH_MOVEMENT_SCALE;
     else
-        end = Vector(0,0);
+        end = Vector(0, 0);
+    if (hand == left_hand)
+        end.x *= -1;
     double time = std::min( 5*GESTURE_FRAME_TIME, 0.41);
     if (time <= 0) time = 0.1;
     hand_data[hand]->hand_translate = Interp2D(hand_data[hand]->current, end, time);
@@ -54,7 +56,7 @@ void GlyphDrawer::notify_hold(Hand* hand)
         }
         // new glyph
         hand_data[hand]->state = HandDataState::Drawing;
-        hand_data[hand]->current_glyph = new Glyph(hand->gesture);
+        hand_data[hand]->current_glyph = new Glyph(hand->gesture, hand==left_hand);
         glyphs.push_back(hand_data[hand]->current_glyph);
     }
     else
@@ -111,8 +113,9 @@ void GlyphDrawer::notify_winddown(Hand* hand)
     else if (other->state == HandDataState::Modifying 
         && (hand_data[hand]->state == HandDataState::Drawing || hand_data[hand]->state == HandDataState::Holding))
     {
+        // TODO animated the difference
         other->current_glyph->reverse_scale();
-        other->current_glyph->reset();
+        other->current_glyph->reset(hand==right_hand);
         other->state = HandDataState::Drawing;
     }
     // no mods going on
@@ -179,6 +182,8 @@ void GlyphDrawer::update(double dt)
             Vector p2 = hand_data[hand]->move_path[ceil(r)] * GLYPH_MOVEMENT_SCALE;
             double r_d = r - floor(r);
             Vector p = p1*(1-r_d) + p2*r_d;
+            if (hand == left_hand)
+                p.x *= -1;
             hand_data[hand]->current = p;
             pos += p;
 

@@ -2,6 +2,10 @@
 BUGS:
 =================
 
+Hand sprite disappears non-deterministically on WindDown(?)
+
+No outline
+
 =================
 TODO:
 =================
