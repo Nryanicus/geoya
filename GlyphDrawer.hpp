@@ -38,7 +38,7 @@ class HandData
 public:
 
     HandData()
-    : state(HandDataState::None), glyph_outline(NULL)
+    : state(HandDataState::None)
     {}
 
     // take on glyph other is currently drawing
@@ -50,18 +50,6 @@ public:
         current_glyph->scale_active = true;
         current_glyph->scale_interp = other->current_glyph->scale_interp;
         current_glyph->reverse_scale();
-        
-        glyph_outline = new GlyphOutline(gesture);
-        glyph_outline->scale = other->glyph_outline->scale_interp.get_point();
-        glyph_outline->scale_active = true;
-        glyph_outline->scale_interp = other->glyph_outline->scale_interp;
-        glyph_outline->reverse_scale();
-    }
-
-    ~HandData()
-    {
-        if (glyph_outline)
-            delete glyph_outline;
     }
 
     HandDataState state;
@@ -73,7 +61,6 @@ public:
     Vector current;
     Vector base_pos;
     std::vector<Vector> move_path; 
-    GlyphOutline* glyph_outline;
     Glyph* current_glyph;
 };
 
@@ -102,6 +89,7 @@ public:
     void notify_cancel(Hand* hand);
     void notify_winddown(Hand* hand);
     bool notify_cast(Hand* hand);
+    bool notify_cast_complete(Hand* hand);
 
     void draw(sf::RenderTarget* target);
 

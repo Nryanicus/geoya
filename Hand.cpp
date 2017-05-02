@@ -59,12 +59,6 @@ void Hand::draw(sf::RenderTarget* target)
 
 void Hand::update(double dt)
 {
-    // std::cout << hs2s(hand_state) << " " << g2s(gesture) << std::endl;
-    // std::cout << hand_time << " " << hand_frame << std::endl;
-    // for (int i=0; i<NUM_FINGERS; i++)
-    //     std::cout << i << ": " << fs2s(finger_states[i]) << " " << finger_times[i] << " " << finger_frames[i] << " | ";
-    // std::cout << std::endl;
-    // std::cout << "==================================" << std::endl;
     if (hand_state == HandState::CastReady) return;
     if (hand_state == HandState::None)
     {
@@ -142,10 +136,16 @@ void Hand::update(double dt)
                 if (hand_frame >= MAX_FRAMES)
                 {
                     hand_frame = MAX_FRAMES;
-                    hand_state = HandState::Hold;
                     hand_time = 0;
-                    parent->notify_hold(this);
-                    // TODO: send signal to glyph drawer
+                    if (hand_state == HandState::WindUp)
+                    {
+                        parent->notify_hold(this);
+                    }
+                    else
+                    {
+                        parent->notify_cast_complete(this);
+                    }
+                    hand_state = HandState::Hold;
                 }
             }
             // either Cancelled or WindDown, same either way

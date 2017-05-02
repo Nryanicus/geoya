@@ -70,6 +70,8 @@ const Vector CUBICBEZIER2 = Vector(0.15, 1.0);
 const Vector SINEBEZIER1 = Vector(0.5,  0.0);
 const Vector SINEBEZIER2 = Vector(0.7, 0.7);
 
+const double GLYPH_ROTATION_TIME = 1.0;
+
 const std::vector<Vector> EARTHSQUARE = {
     Vector(-1, 1),
     Vector(1, 1),

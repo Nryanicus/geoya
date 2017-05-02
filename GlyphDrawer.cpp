@@ -39,48 +39,56 @@ void GlyphDrawer::notify_windup(Hand* hand)
 
 void GlyphDrawer::notify_hold(Hand* hand)
 {
+    HandData* other = hand_data[other_hand[hand]];
     if (is_drawable(hand->gesture))
     {
         hand_data[hand]->move_path = GESTURE_TO_MOVE.at(hand->gesture);
+        // modify, scale
         if (hand->gesture == other_hand[hand]->gesture 
-            && (hand_data[other_hand[hand]]->state == HandDataState::Drawing || hand_data[other_hand[hand]]->state == HandDataState::Holding))
+            && other->state == HandDataState::Drawing)
         {
             hand_data[hand]->state = HandDataState::Modifying;
-            HandData* other = hand_data[other_hand[hand]];
-            other->glyph_outline->set_scale_interp();
+            hand_data[hand]->current_glyph = other->current_glyph;
             other->current_glyph->set_scale_interp();
             return;
         }
+        // new glyph
         hand_data[hand]->state = HandDataState::Drawing;
-        if (hand_data[hand]->glyph_outline)
-            delete hand_data[hand]->glyph_outline;
-        hand_data[hand]->glyph_outline = new GlyphOutline(hand->gesture);
         hand_data[hand]->current_glyph = new Glyph(hand->gesture);
         glyphs.push_back(hand_data[hand]->current_glyph);
     }
     else
     {
+        // modify, other
         hand_data[hand]->state = HandDataState::Holding;
-        //TODO: Horz, Vert, Rotate, Cast
-
+        if (! (other->current_glyph && is_drawable(other_hand[hand]->gesture)))
+            return;
+        hand_data[hand]->current_glyph = other->current_glyph;
+        if (hand->gesture == Gesture::Rotate)
+        {
+            double end = 45;
+            if (hand == left_hand)
+                end *= -1;
+            hand_data[hand]->current_glyph->set_rotation_interp(0, end);
+        }
+        //TODO: Horz, Vert
     }
 }
 
 bool GlyphDrawer::notify_cast(Hand* hand)
 {
-    if (hand == left_hand)
-        std::cout << "L:";
-    else
-        std::cout << "R:";
-    std::cout << " notify cast" << std::endl;
     if (other_hand[hand]->hand_state == HandState::CastReady)
     {
-        std::cout << "other is ready, casting" << std::endl;
         other_hand[hand]->gesture = Gesture::Cast;
         other_hand[hand]->hand_state = HandState::Casting;
         return true;
     }
     return false;
+}
+
+bool GlyphDrawer::notify_cast_complete(Hand* hand)
+{
+    glyphs.clear();
 }
 
 void GlyphDrawer::notify_cancel(Hand* hand)
@@ -91,37 +99,35 @@ void GlyphDrawer::notify_cancel(Hand* hand)
 void GlyphDrawer::notify_winddown(Hand* hand)
 {
     // only possible mod here is Scale as others happen instantaneously
+
     // cancel on-going mod, we're modding other hand
     HandData* other = hand_data[other_hand[hand]];
     if (hand_data[hand]->state == HandDataState::Modifying 
         && (other->state == HandDataState::Drawing || other->state == HandDataState::Holding))
     {
-        other->glyph_outline->reverse_scale();
         other->current_glyph->reverse_scale();
     }
     // cancel on-going mod, other hand is modding us
     else if (other->state == HandDataState::Modifying 
         && (hand_data[hand]->state == HandDataState::Drawing || hand_data[hand]->state == HandDataState::Holding))
     {
-        other->swap(hand_data[hand], hand->gesture);
-        delete hand_data[hand]->current_glyph;
-        hand_data[hand]->glyph_outline->clear();
-        // remove the now-invalid glyph
-        glyphs.pop_back();
-        // add new one
-        glyphs.push_back(other->current_glyph);
+        other->current_glyph->reverse_scale();
+        other->current_glyph->reset();
+        other->state = HandDataState::Drawing;
     }
+    // no mods going on
     else
     {
-        hand_data[hand]->move_path.clear();
-        if (hand_data[hand]->glyph_outline)
-            hand_data[hand]->glyph_outline->clear();
+        // if we didn't finish drawing the current glyph kill it, TODO ANIM
+        if (hand_data[hand]->current_glyph && ! hand_data[hand]->current_glyph->complete)
+            glyphs.erase(std::remove(glyphs.begin(), glyphs.end(), hand_data[hand]->current_glyph), glyphs.end());
     }
-
+    hand_data[hand]->move_path.clear();
     hand_data[hand]->state = HandDataState::Moving;
     double time = std::min( 5*GESTURE_FRAME_TIME, 0.41);
     if (time <= 0) time = 0.1;
-    // hand_data[hand]->hand_translate = Interp2D(hand_data[hand]->current, Vector(0, 0), time);
+    hand_data[hand]->hand_translate = Interp2D(hand_data[hand]->current, Vector(0, 0), time);
+    hand_data[hand]->current_glyph = NULL;
 }
 
 void GlyphDrawer::draw(sf::RenderTarget* target)
@@ -129,12 +135,12 @@ void GlyphDrawer::draw(sf::RenderTarget* target)
     left_hand->draw(target);
     right_hand->draw(target);
 
-    for (auto hand: {left_hand, right_hand})
-        if (hand_data[hand]->glyph_outline)
-            hand_data[hand]->glyph_outline->draw(target);
-
     for (auto glyph: glyphs)
+    {
+        if (! glyph->complete)
+            glyph->draw_outline(target);
         glyph->draw(target);
+    }
 }
 
 void GlyphDrawer::update(double dt)
@@ -182,7 +188,10 @@ void GlyphDrawer::update(double dt)
 
             // if we're done, change state
             if (hand->hand_time >= GLYPH_DRAW_TIME)
+            {
                 hand_data[hand]->state = HandDataState::Holding;
+                hand_data[hand]->current_glyph->complete = true;
+            }
         }
         // hold hand at endpoint of the glyph
         else if (hand_data[hand]->state == HandDataState::Holding)
@@ -197,10 +206,7 @@ void GlyphDrawer::update(double dt)
             if (hand_data[hand]->hand_translate.update(dt))
                 hand_data[hand]->state = HandDataState::None;
         }
-
         hand->position = pos;
-        if (hand_data[hand]->glyph_outline)
-            hand_data[hand]->glyph_outline->update(dt);
     }
     for (auto glyph: glyphs)
         glyph->update(dt);
