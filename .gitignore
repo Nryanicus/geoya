@@ -1,0 +1,10 @@
+*.o
+*.gch
+BlenderRender/
+debug
+main
+*.py
+*.blend
+Concepts/
+__pycache__/
+BUGS

@@ -90,4 +90,16 @@ public:
     }
 };
 
+namespace std {
+    template <> struct hash<Vector>
+    {
+        size_t operator()(const Vector & v) const
+        {
+            size_t const h1 ( std::hash<double>{}(v.x) );
+            size_t const h2 ( std::hash<double>{}(v.y) );
+            return h1 ^ (h2 << 1);
+        }
+    };
+}
+
 #endif

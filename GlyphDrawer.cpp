@@ -49,15 +49,23 @@ void GlyphDrawer::notify_hold(Hand* hand)
         if (hand->gesture == other_hand[hand]->gesture 
             && other->state == HandDataState::Drawing)
         {
-            hand_data[hand]->state = HandDataState::Modifying;
             hand_data[hand]->current_glyph = other->current_glyph;
+            hand_data[hand]->state = HandDataState::Modifying;
             other->current_glyph->set_scale_interp();
-            return;
+        }
+        // if other hand is done drawing, just hold it
+        else if (hand->gesture == other_hand[hand]->gesture && (other->current_glyph && other->current_glyph->complete))
+        {
+            hand_data[hand]->current_glyph = other->current_glyph;
+            hand_data[hand]->state = HandDataState::Holding;
         }
         // new glyph
-        hand_data[hand]->state = HandDataState::Drawing;
-        hand_data[hand]->current_glyph = new Glyph(hand->gesture, hand==left_hand);
-        glyphs.push_back(hand_data[hand]->current_glyph);
+        else
+        {
+            hand_data[hand]->state = HandDataState::Drawing;
+            hand_data[hand]->current_glyph = new Glyph(hand->gesture, hand==left_hand);
+            glyphs.push_back(hand_data[hand]->current_glyph);
+        }
     }
     else
     {
@@ -122,9 +130,10 @@ void GlyphDrawer::notify_winddown(Hand* hand)
     else
     {
         // if we didn't finish drawing the current glyph kill it, TODO ANIM
-        if (hand_data[hand]->current_glyph && ! hand_data[hand]->current_glyph->complete)
+        if (is_drawable(hand->gesture) && hand_data[hand]->current_glyph && ! hand_data[hand]->current_glyph->complete)
             glyphs.erase(std::remove(glyphs.begin(), glyphs.end(), hand_data[hand]->current_glyph), glyphs.end());
     }
+    // move hand to centre
     hand_data[hand]->move_path.clear();
     hand_data[hand]->state = HandDataState::Moving;
     double time = std::min( 5*GESTURE_FRAME_TIME, 0.41);

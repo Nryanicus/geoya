@@ -281,13 +281,9 @@ void Hand::input(int finger, bool in)
             finger_times[finger] = 0;
             finger_states[finger] = FingerState::Opening;
         }
-        // else if (finger_states[finger] == FingerState::Open)
-        //     std::cout << "Open finger told to open?!" << std::endl;
-        // else if (finger_states[finger] == FingerState::Opening)
-        //     std::cout << "Opening finger told to open?!" << std::endl;
     }
-    // can't interrupt gesture when there's none or if we're winding down
-    if (gesture != Gesture::None && hand_state != HandState::WindDown)
+    // can't interrupt gesture when there's none, if we're winding down or we're casting
+    if (gesture != Gesture::None && hand_state != HandState::WindDown  && hand_state != HandState::Casting)
     {
         if (gesture != check_gesture())
         {

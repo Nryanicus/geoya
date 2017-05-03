@@ -60,6 +60,17 @@ enum class HandState {None, WindUp, Hold, CastReady, Casting, WindDown, Cancel};
 enum class Gesture {None, Air, Fire, Earth, Water, Life, Death, Vert, Horz, Cast, Rotate};
 enum class HandDataState {None, Wandering, Holding, Moving, Drawing, Modifying};
 
+// Zac why is your compiler dumb?
+namespace std {
+    template <> struct hash<Gesture>
+    {
+        size_t operator()(const Gesture & g) const
+        {
+            return size_t(g);
+        }
+    };
+}
+
 enum class InterpType {Linear, CubicBezier, SineBezier};
 const Vector BEZIERSTART = Vector(0.0,  0.0);
 const Vector BEZIEREND = Vector(1.0,  1.0);
@@ -507,5 +518,48 @@ const std::unordered_map<std::string, std::array<int, 6>> TopBackSpriteOffsets =
     {"TopBack4Close4", {1729, 2723, 53, 151, 333, 541}},
     {"TopBack4Close5", {378, 2079, 53, 144, 333, 550}},
 };
+
+// Sub Glyph Translation
+enum class DIRECTION {LEFT, RIGHT, UP, DOWN};
+
+
+class PointDirection {
+public:
+    Vector vector;
+    DIRECTION direction;
+    PointDirection(Vector v, DIRECTION d)
+    : vector(v), direction(d)
+    {}
+    bool operator==(PointDirection o) const
+    {
+        return vector==o.vector&&direction==o.direction;
+    }
+};
+
+const std::vector<Vector> EARTHPOINTS = {
+    Vector(0, 0),
+    Vector(-1, 1),
+    Vector(1, 1),
+    Vector(1, -1),
+    Vector(-1, -1),
+};
+
+namespace std {
+    template <> struct hash<PointDirection>
+    {
+        size_t operator()(const PointDirection & pd) const
+        {
+            size_t const h1 ( std::hash<Vector>{}(pd.vector) );
+            size_t const h2 ( std::hash<DIRECTION>{}(pd.direction) );
+            return h1 ^ (h2 << 1);
+        }
+    };
+}
+
+// direction to point sub-glyph position index
+
+// const std::unordered_map<PointDirection, int> EARTHPOINTTRANSLATE = {
+//     {PointDirection(EARTHPOINTS[0], LEFT), },
+// };
 
 #endif
