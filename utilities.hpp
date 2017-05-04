@@ -117,8 +117,9 @@ public:
         return time_elapsed >= time;
     }
 
-    double get_bezier_ratio(double t,Vector p1, Vector p2)
+    double get_bezier_ratio(double t, Vector p1, Vector p2)
     {
+        if (t < 0.001) t = 0;
         Vector v = BEZIERSTART*pow(1-t, 3) + p1*3*pow(1-t,2)*t + p2*3*(1-t)*pow(t,2) + BEZIEREND*pow(t,3);
         return v.y;
     }
@@ -135,6 +136,8 @@ public:
             r = get_bezier_ratio(t, SINEBEZIER1, SINEBEZIER2);
         else
             assert(false);
+        if(r > 1) r = 1;
+        if(r < 0) r = 0;
         return start*(1-r) + end*r;
     }
 };
@@ -194,5 +197,9 @@ int random_int(int a, int b);
 sf::IntRect spritesheet_rect(std::string sprite, std::string frame);
 
 sf::Vector2f spritesheet_offset(std::string sprite, std::string frame);
+
+namespace std{
+    bool isfinite(Vector v);
+}
 
 #endif

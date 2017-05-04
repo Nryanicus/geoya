@@ -54,7 +54,8 @@ void GlyphDrawer::notify_hold(Hand* hand)
             other->current_glyph->set_scale_interp();
         }
         // if other hand is done drawing, just hold it
-        else if (hand->gesture == other_hand[hand]->gesture && (other->current_glyph && other->current_glyph->complete))
+        else if (hand->gesture == other_hand[hand]->gesture 
+            && (other->current_glyph && other->current_glyph->complete))
         {
             hand_data[hand]->current_glyph = other->current_glyph;
             hand_data[hand]->state = HandDataState::Holding;
@@ -79,7 +80,7 @@ void GlyphDrawer::notify_hold(Hand* hand)
             double end = 45;
             if (hand == left_hand)
                 end *= -1;
-            hand_data[hand]->current_glyph->set_rotation_interp(0, end);
+            hand_data[hand]->current_glyph->set_rotation_interp(end);
         }
         //TODO: Horz, Vert
     }
@@ -91,6 +92,10 @@ bool GlyphDrawer::notify_cast(Hand* hand)
     {
         other_hand[hand]->gesture = Gesture::Cast;
         other_hand[hand]->hand_state = HandState::Casting;
+        other_hand[hand]->dirty = true;
+
+        hand_data[hand]->state = HandDataState::Casting;
+        hand_data[other_hand[hand]]->state = HandDataState::Casting;
         return true;
     }
     return false;
@@ -186,7 +191,6 @@ void GlyphDrawer::update(double dt)
             double r = hand->hand_time/GLYPH_DRAW_TIME*(hand_data[hand]->move_path.size()-1);
             if (r > hand_data[hand]->move_path.size()-1)
                 r = hand_data[hand]->move_path.size()-1;
-            // std::cout << hand_data[hand]->move_path.size() << std::endl;
             Vector p1 = hand_data[hand]->move_path[floor(r)] * GLYPH_MOVEMENT_SCALE;
             Vector p2 = hand_data[hand]->move_path[ceil(r)] * GLYPH_MOVEMENT_SCALE;
             double r_d = r - floor(r);

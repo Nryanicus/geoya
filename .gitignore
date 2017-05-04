@@ -1,4 +1,5 @@
 *.o
+*.d
 *.gch
 BlenderRender/
 debug

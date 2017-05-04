@@ -58,7 +58,7 @@ const double GLYPH_THICKNESS = 10.0;
 enum class FingerState {Opening, Open, Closing, Closed};
 enum class HandState {None, WindUp, Hold, CastReady, Casting, WindDown, Cancel};
 enum class Gesture {None, Air, Fire, Earth, Water, Life, Death, Vert, Horz, Cast, Rotate};
-enum class HandDataState {None, Wandering, Holding, Moving, Drawing, Modifying};
+enum class HandDataState {None, Wandering, Holding, Moving, Drawing, Modifying, Casting};
 
 // Zac why is your compiler dumb?
 namespace std {
@@ -81,7 +81,7 @@ const Vector CUBICBEZIER2 = Vector(0.15, 1.0);
 const Vector SINEBEZIER1 = Vector(0.5,  0.0);
 const Vector SINEBEZIER2 = Vector(0.7, 0.7);
 
-const double GLYPH_ROTATION_TIME = 1.0;
+const double GLYPH_ROTATION_TIME = 9*GESTURE_FRAME_TIME;
 
 const std::vector<Vector> EARTHSQUARE = {
     Vector(-1, 1),
@@ -545,6 +545,13 @@ const std::vector<Vector> EARTHPOINTS = {
 };
 
 namespace std {
+    template <> struct hash<DIRECTION>
+    {
+        size_t operator()(const DIRECTION & g) const
+        {
+            return size_t(g);
+        }
+    };
     template <> struct hash<PointDirection>
     {
         size_t operator()(const PointDirection & pd) const

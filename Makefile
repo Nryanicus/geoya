@@ -1,15 +1,28 @@
-# LIBS = -Ilib/json/src -lsfml-graphics -lsfml-window -lsfml-system
+CC = g++
+CC_FLAGS = -Og
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+ 
+# File names
+EXEC = main
+DEBUG = debug
+SOURCES = $(wildcard *.cpp)
+OBJECTS = $(SOURCES:.cpp=.o)
+ 
+# Main target
+$(EXEC): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(EXEC) $(LIBS)
 
-all:
-    g++ -std=c++14 *.hpp *.cpp -o main $(LIBS)
-opt:
-    g++ -O3 -std=c++14 *.hpp *.cpp -o main_opt $(LIBS)
-debug:
-    g++ -g -Og -std=c++14 *.hpp *.cpp -o debug $(LIBS)
-warnings:
-    g++ -g -Og -std=c++14 -Wall -Wno-reorder *.hpp *.cpp -o debug $(LIBS)
-gprof:
-    g++ -pg -O3 -std=c++14 *.hpp *.cpp -o debug_gprof $(LIBS)
+# debug target
+$(DEBUG):
+	rm debug
+	g++ -g -Og *.hpp *.cpp -o debug $(LIBS)
+ 
+# To obtain object files
+%.o: %.cpp
+	$(CC) -c $(CC_FLAGS) -MMD $< -o $@
+ 
+# To remove generated files
+clean:
+	rm -f $(EXEC) $(OBJECTS)
 
-.PHONY: all debug opt warnings gprog
+-include *.d

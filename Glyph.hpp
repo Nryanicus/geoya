@@ -201,10 +201,13 @@ public:
         scale_interp = Interp1D(start, end, time, InterpType::CubicBezier);
     }
 
-    void set_rotation_interp(double start=0, double end=45, double time=GLYPH_ROTATION_TIME)
+    void set_rotation_interp(double end=45, double time=GLYPH_ROTATION_TIME)
     {
+        // if we're already rotating do nothing
+        if (rotation_active)
+            return;
         rotation_active = true;
-        rotation_interp = Interp1D(rotation+start, rotation+end, time, InterpType::CubicBezier);
+        rotation_interp = Interp1D(rotation, rotation+end, time, InterpType::CubicBezier);
     }
 };
 

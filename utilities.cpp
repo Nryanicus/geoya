@@ -140,9 +140,6 @@ int random_int(int a, int b)
 
 sf::IntRect spritesheet_rect(std::string sprite, std::string frame)
 {
-    // std::cout << "rect" << std::endl;
-    // std::cout << sprite << std::endl;
-    // std::cout << frame << std::endl;
     if (sprite == "TopBack")
         return sf::IntRect(TopBackSpriteOffsets.at(sprite+frame).at(0), TopBackSpriteOffsets.at(sprite+frame).at(1), TopBackSpriteOffsets.at(sprite+frame).at(2), TopBackSpriteOffsets.at(sprite+frame).at(3));
     else if (sprite == "Front")
@@ -164,5 +161,12 @@ sf::Vector2f spritesheet_offset(std::string sprite, std::string frame)
     {
         assert (false);
         return sf::Vector2f(0, 0);
+    }
+}
+
+namespace std {
+    bool isfinite(Vector v)
+    {
+        return isfinite(v.x) && isfinite(v.y);
     }
 }

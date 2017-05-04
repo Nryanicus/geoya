@@ -48,12 +48,12 @@ void Hand::draw(sf::RenderTarget* target)
         // update canvas
         canvas.display();
         draw_sprite.setTexture(canvas.getTexture());
+        draw_sprite.setOrigin(draw_sprite.getTextureRect().width/2, draw_sprite.getTextureRect().height/2);
         dirty = false;
+        if (right)
+            draw_sprite.setScale(-1.0, 1.0);
     }
-    draw_sprite.setOrigin(draw_sprite.getTextureRect().width/2, draw_sprite.getTextureRect().height/2);
     draw_sprite.setPosition(position.to_sfml());
-    if (right)
-        draw_sprite.setScale(-1.0, 1.0);
     target->draw(draw_sprite);
 }
 
@@ -138,13 +138,9 @@ void Hand::update(double dt)
                     hand_frame = MAX_FRAMES;
                     hand_time = 0;
                     if (hand_state == HandState::WindUp)
-                    {
                         parent->notify_hold(this);
-                    }
                     else
-                    {
                         parent->notify_cast_complete(this);
-                    }
                     hand_state = HandState::Hold;
                 }
             }

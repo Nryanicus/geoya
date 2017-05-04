@@ -38,12 +38,13 @@ class HandData
 public:
 
     HandData()
-    : state(HandDataState::None)
+    : state(HandDataState::None), hand_translate_active(false), current_glyph(NULL)
     {}
 
     HandDataState state;
 
     // for wandering
+    bool hand_translate_active;
     Interp2D hand_translate;
 
     // for drawing

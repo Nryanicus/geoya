@@ -8,13 +8,12 @@
 class Vector
 {
 public:
-    float x,y;
+    double x,y;
     Vector() : x(0), y(0) {}
-    Vector(float x, float y) : x(x), y(y) {}
     Vector(double x, double y) : x(x), y(y) {}
-    Vector(int x, int y) : x((float)x), y((float)y) {}
+    Vector(int x, int y) : x((double)x), y((double)y) {}
     Vector(sf::Vector2f v) : x(v.x), y(v.y) {}
-    Vector(sf::Vector2i v) : x((float)v.x), y((float)v.y) {}
+    Vector(sf::Vector2i v) : x((double)v.x), y((double)v.y) {}
     Vector operator-(Vector o) const
     {
         return Vector(x-o.x, y-o.y);
@@ -43,40 +42,40 @@ public:
         y += o.y;
         return *this;
     }
-    Vector operator*(float m) const
+    Vector operator*(double m) const
     {
         return Vector(m*x, m*y);
     }
-    Vector operator*=(float m)
+    Vector operator*=(double m)
     {
         x *= m;
         y *= m;
         return *this;
     }    
-    Vector operator/(float m) const
+    Vector operator/(double m) const
     {
         return Vector(x/m, y/m);
     }
-    Vector operator/=(float m)
+    Vector operator/=(double m)
     {
         x /= m;
         y /= m;
         return *this;
     }
-    float magnitude()
+    double magnitude()
     {
         return sqrt(x*x + y*y);
     }
-    float magnitude_squared()
+    double magnitude_squared()
     {
         return x*x + y*y;
     }
     Vector normalise()
     {
-        float m = magnitude();
+        double m = magnitude();
         return (*this)/m;
     }
-    float dot(Vector other)
+    double dot(Vector other)
     {
         return x*other.x + y*other.y;
     }
@@ -101,5 +100,7 @@ namespace std {
         }
     };
 }
+
+
 
 #endif
