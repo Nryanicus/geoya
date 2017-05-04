@@ -1,5 +1,5 @@
 CC = g++
-CC_FLAGS = -Og
+CC_FLAGS = -Og -std=c++11
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system
  
 # File names
