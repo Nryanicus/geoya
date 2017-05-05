@@ -11,6 +11,8 @@ public:
     double x,y;
     Vector() : x(0), y(0) {}
     Vector(double x, double y) : x(x), y(y) {}
+    Vector(int x, double y) : x((double)x), y((double)y) {}
+    Vector(double x, int y) : x((double)x), y((double)y) {}
     Vector(int x, int y) : x((double)x), y((double)y) {}
     Vector(sf::Vector2f v) : x(v.x), y(v.y) {}
     Vector(sf::Vector2i v) : x((double)v.x), y((double)v.y) {}

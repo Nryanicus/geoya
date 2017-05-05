@@ -98,6 +98,20 @@ static std::string hs2s(HandState s)
     return "";
 }
 
+static std::string d2s(DIRECTION s)
+{
+    if (s == DIRECTION::UP)
+        return "Up";
+    if (s == DIRECTION::DOWN)
+        return "Down";
+    if (s == DIRECTION::RIGHT)
+        return "Right";
+    if (s == DIRECTION::LEFT)
+        return "Left";
+    assert(false);
+    return "";
+}
+
 template <class T> class Interpolation
 {
 public:
@@ -109,7 +123,7 @@ public:
 
     Interpolation(){}
     Interpolation(T s, T e, double t, InterpType ty=InterpType::Linear)
-    : start(s), end(e), time(t), type(ty)
+    : start(s), end(e), time(t), type(ty), time_elapsed(0)
     {}
     bool update(double dt)
     {
@@ -200,6 +214,39 @@ sf::Vector2f spritesheet_offset(std::string sprite, std::string frame);
 
 namespace std{
     bool isfinite(Vector v);
+}
+
+static Vector GESTURE_INDEXDIR_TO_POINT(Gesture g, IndexDirection id, int* position_index)
+{
+    Vector v;
+    if (g == Gesture::Earth || g == Gesture::Death)
+    {
+        (*position_index) = EARTHPOINTTRANSLATE.at(id); 
+        v = EARTHPOINTS.at(EARTHPOINTTRANSLATE.at(id));
+    }
+    else if (g == Gesture::Air)
+    {
+        (*position_index) = AIRPOINTTRANSLATE.at(id); 
+        v = AIRPOINTS.at(AIRPOINTTRANSLATE.at(id));
+    }
+    else if (g == Gesture::Fire)
+    {
+        (*position_index) = FIREPOINTTRANSLATE.at(id); 
+        v = FIREPOINTS.at(FIREPOINTTRANSLATE.at(id));
+    }
+    else if (g == Gesture::Water)
+    {
+        (*position_index) = WATERPOINTTRANSLATE.at(id); 
+        v = WATERPOINTS.at(WATERPOINTTRANSLATE.at(id));
+    }
+    else if (g == Gesture::Life)
+    {
+        (*position_index) = LIFEPOINTTRANSLATE.at(id); 
+        v = LIFEPOINTS.at(LIFEPOINTTRANSLATE.at(id));
+    }
+    else 
+        assert(false);
+    return v;
 }
 
 #endif

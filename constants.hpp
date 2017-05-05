@@ -82,6 +82,7 @@ const Vector SINEBEZIER1 = Vector(0.5,  0.0);
 const Vector SINEBEZIER2 = Vector(0.7, 0.7);
 
 const double GLYPH_ROTATION_TIME = 9*GESTURE_FRAME_TIME;
+const double GLYPH_TRANSLATE_TIME = GLYPH_ROTATION_TIME;
 
 const std::vector<Vector> EARTHSQUARE = {
     Vector(-1, 1),
@@ -128,10 +129,10 @@ const std::vector<Vector> WATERCIRCLE = {
 };
 
 const std::vector<Vector> FIRETRIANGLE = {
-    Vector(-1.0, 0.933),
-    Vector(0.0, -0.933),
-    Vector(1.0, 0.933),
-    Vector(-1.0, 0.933),
+    Vector(-0.8660, 0.5),
+    Vector(0.0, -1.0),
+    Vector(0.8660, 0.5),
+    Vector(-0.8660, 0.5),
 };
 
 const std::vector<Vector> AIRLINES = {
@@ -522,28 +523,82 @@ const std::unordered_map<std::string, std::array<int, 6>> TopBackSpriteOffsets =
 // Sub Glyph Translation
 enum class DIRECTION {LEFT, RIGHT, UP, DOWN};
 
-
-class PointDirection {
+class IndexDirection {
 public:
-    Vector vector;
+    int index;
     DIRECTION direction;
-    PointDirection(Vector v, DIRECTION d)
-    : vector(v), direction(d)
+    IndexDirection(int i, DIRECTION d)
+    : index(i), direction(d)
     {}
-    bool operator==(PointDirection o) const
+    bool operator==(IndexDirection o) const
     {
-        return vector==o.vector&&direction==o.direction;
+        return index==o.index&&direction==o.direction;
     }
 };
 
+// reading order
+// deathpoints same as earth
 const std::vector<Vector> EARTHPOINTS = {
-    Vector(0, 0),
-    Vector(-1, 1),
-    Vector(1, 1),
-    Vector(1, -1),
     Vector(-1, -1),
+    Vector(0, -1),
+    Vector(1, -1),
+    Vector(-1, 0),
+    Vector(0, 0),
+    Vector(1, 0),
+    Vector(-1, 1),
+    Vector(0, 1),
+    Vector(1, 1),
 };
 
+const std::vector<Vector> AIRPOINTS = {
+    Vector(0, -1),
+    Vector(0.5, -0.5),
+    Vector(-0.5, -0.5),
+    Vector(-1, 0),
+    Vector(0, 0),
+    Vector(1, 0),
+    Vector(-0.5, 0.5),
+    Vector(0.5, 0.5),
+    Vector(0, 1),
+};
+
+const std::vector<Vector> FIREPOINTS = {
+    Vector(0, -1),
+    Vector(-0.8660, -0.5),
+    Vector(0.8660, -0.5),
+    Vector(-0.4330, -0.5),
+    Vector(0, 0),
+    Vector(0.4330, -0.5),
+    Vector(-0.8660, 0.5),
+    Vector(0, 0.5),
+    Vector(0.8660, 0.5),
+};
+
+const std::vector<Vector> WATERPOINTS = {
+    Vector(0.0, -1.0),
+    Vector(-0.7071, -0.7071),
+    Vector(0.7071, -0.7071),
+    Vector(-1, 0),
+    Vector(0, 0),
+    Vector(1, 0),
+    Vector(-0.7071, 0.7071),
+    Vector(0.7071, 0.7071),
+    Vector(0, 1),
+};
+
+const std::vector<Vector> LIFEPOINTS = {
+    Vector(-0.8268, -0.8268),
+    Vector(0, -0.8268),
+    Vector(0.8268, -0.8268),
+    Vector(-0.4134, -0.4134),
+    Vector(0, 0),
+    Vector(0.4134, 0.4134),
+    Vector(-0.8268, 0.8268),
+    Vector(0, 0.8268),
+    Vector(0.8268, 0.8268),
+};
+
+// hashing junk
 namespace std {
     template <> struct hash<DIRECTION>
     {
@@ -552,21 +607,188 @@ namespace std {
             return size_t(g);
         }
     };
-    template <> struct hash<PointDirection>
+    template <> struct hash<IndexDirection>
     {
-        size_t operator()(const PointDirection & pd) const
+        size_t operator()(const IndexDirection & id) const
         {
-            size_t const h1 ( std::hash<Vector>{}(pd.vector) );
-            size_t const h2 ( std::hash<DIRECTION>{}(pd.direction) );
+            size_t const h1 ( std::hash<int>{}(id.index) );
+            size_t const h2 ( std::hash<DIRECTION>{}(id.direction) );
             return h1 ^ (h2 << 1);
         }
     };
 }
 
 // direction to point sub-glyph position index
+const std::unordered_map<IndexDirection, int> EARTHPOINTTRANSLATE = {
+    {IndexDirection(1, DIRECTION::LEFT), 0},
+    {IndexDirection(2, DIRECTION::LEFT), 1},
+    {IndexDirection(4, DIRECTION::LEFT), 3},
+    {IndexDirection(5, DIRECTION::LEFT), 4},
+    {IndexDirection(7, DIRECTION::LEFT), 6},
+    {IndexDirection(8, DIRECTION::LEFT), 7},
+    
+    {IndexDirection(0, DIRECTION::RIGHT), 1},
+    {IndexDirection(1, DIRECTION::RIGHT), 2},
+    {IndexDirection(3, DIRECTION::RIGHT), 4},
+    {IndexDirection(4, DIRECTION::RIGHT), 5},
+    {IndexDirection(6, DIRECTION::RIGHT), 7},
+    {IndexDirection(7, DIRECTION::RIGHT), 8},
 
-// const std::unordered_map<PointDirection, int> EARTHPOINTTRANSLATE = {
-//     {PointDirection(EARTHPOINTS[0], LEFT), },
-// };
+    {IndexDirection(3, DIRECTION::UP), 0},
+    {IndexDirection(4, DIRECTION::UP), 1},
+    {IndexDirection(5, DIRECTION::UP), 2},
+    {IndexDirection(6, DIRECTION::UP), 3},
+    {IndexDirection(7, DIRECTION::UP), 4},
+    {IndexDirection(8, DIRECTION::UP), 5},
+
+    {IndexDirection(0, DIRECTION::DOWN), 3},
+    {IndexDirection(1, DIRECTION::DOWN), 4},
+    {IndexDirection(2, DIRECTION::DOWN), 5},
+    {IndexDirection(3, DIRECTION::DOWN), 6},
+    {IndexDirection(4, DIRECTION::DOWN), 7},
+    {IndexDirection(5, DIRECTION::DOWN), 8},
+};
+
+const std::unordered_map<IndexDirection, int> AIRPOINTTRANSLATE = {
+    {IndexDirection(0, DIRECTION::LEFT), 1},
+    {IndexDirection(1, DIRECTION::LEFT), 3},
+    {IndexDirection(2, DIRECTION::LEFT), 1},
+    {IndexDirection(4, DIRECTION::LEFT), 3},
+    {IndexDirection(5, DIRECTION::LEFT), 4},
+    {IndexDirection(6, DIRECTION::LEFT), 3},
+    {IndexDirection(7, DIRECTION::LEFT), 6},
+    {IndexDirection(8, DIRECTION::LEFT), 6},
+
+    {IndexDirection(0, DIRECTION::RIGHT), 2},
+    {IndexDirection(1, DIRECTION::RIGHT), 2},
+    {IndexDirection(2, DIRECTION::RIGHT), 5},
+    {IndexDirection(3, DIRECTION::RIGHT), 4},
+    {IndexDirection(4, DIRECTION::RIGHT), 5},
+    {IndexDirection(6, DIRECTION::RIGHT), 7},
+    {IndexDirection(7, DIRECTION::RIGHT), 5},
+    {IndexDirection(8, DIRECTION::RIGHT), 7},
+
+    {IndexDirection(1, DIRECTION::UP), 0},
+    {IndexDirection(2, DIRECTION::UP), 0},
+    {IndexDirection(3, DIRECTION::UP), 1},
+    {IndexDirection(4, DIRECTION::UP), 0},
+    {IndexDirection(5, DIRECTION::UP), 2},
+    {IndexDirection(6, DIRECTION::UP), 1},
+    {IndexDirection(7, DIRECTION::UP), 2},
+    {IndexDirection(8, DIRECTION::UP), 4},
+
+    {IndexDirection(0, DIRECTION::DOWN), 4},
+    {IndexDirection(1, DIRECTION::DOWN), 6},
+    {IndexDirection(2, DIRECTION::DOWN), 7},
+    {IndexDirection(3, DIRECTION::DOWN), 6},
+    {IndexDirection(4, DIRECTION::DOWN), 8},
+    {IndexDirection(5, DIRECTION::DOWN), 7},
+    {IndexDirection(6, DIRECTION::DOWN), 8},
+    {IndexDirection(7, DIRECTION::DOWN), 8},
+};
+
+const std::unordered_map<IndexDirection, int> FIREPOINTTRANSLATE = {
+    {IndexDirection(0, DIRECTION::LEFT), 1},
+    {IndexDirection(2, DIRECTION::LEFT), 5},
+    {IndexDirection(3, DIRECTION::LEFT), 1},
+    {IndexDirection(4, DIRECTION::LEFT), 3},
+    {IndexDirection(5, DIRECTION::LEFT), 4},
+    {IndexDirection(7, DIRECTION::LEFT), 6},
+    {IndexDirection(8, DIRECTION::LEFT), 7},
+
+    {IndexDirection(0, DIRECTION::RIGHT), 2},
+    {IndexDirection(1, DIRECTION::RIGHT), 3},
+    {IndexDirection(3, DIRECTION::RIGHT), 4},
+    {IndexDirection(4, DIRECTION::RIGHT), 5},
+    {IndexDirection(5, DIRECTION::RIGHT), 2},
+    {IndexDirection(6, DIRECTION::RIGHT), 7},
+    {IndexDirection(7, DIRECTION::RIGHT), 8},
+
+    {IndexDirection(1, DIRECTION::UP), 0},
+    {IndexDirection(2, DIRECTION::UP), 0},
+    {IndexDirection(3, DIRECTION::UP), 0},
+    {IndexDirection(4, DIRECTION::UP), 0},
+    {IndexDirection(5, DIRECTION::UP), 0},
+    {IndexDirection(6, DIRECTION::UP), 3},
+    {IndexDirection(7, DIRECTION::UP), 4},
+    {IndexDirection(8, DIRECTION::UP), 5},
+
+    {IndexDirection(0, DIRECTION::DOWN), 4},
+    {IndexDirection(1, DIRECTION::DOWN), 6},
+    {IndexDirection(2, DIRECTION::DOWN), 8},
+    {IndexDirection(3, DIRECTION::DOWN), 6},
+    {IndexDirection(4, DIRECTION::DOWN), 7},
+    {IndexDirection(5, DIRECTION::DOWN), 8},
+};
+
+const std::unordered_map<IndexDirection, int> WATERPOINTTRANSLATE = {
+    {IndexDirection(0, DIRECTION::LEFT), 1},
+    {IndexDirection(1, DIRECTION::LEFT), 3},
+    {IndexDirection(2, DIRECTION::LEFT), 1},
+    {IndexDirection(4, DIRECTION::LEFT), 3},
+    {IndexDirection(5, DIRECTION::LEFT), 4},
+    {IndexDirection(6, DIRECTION::LEFT), 3},
+    {IndexDirection(7, DIRECTION::LEFT), 8},
+    {IndexDirection(8, DIRECTION::LEFT), 6},
+
+    {IndexDirection(0, DIRECTION::RIGHT), 2},
+    {IndexDirection(1, DIRECTION::RIGHT), 0},
+    {IndexDirection(2, DIRECTION::RIGHT), 5},
+    {IndexDirection(3, DIRECTION::RIGHT), 4},
+    {IndexDirection(4, DIRECTION::RIGHT), 5},
+    {IndexDirection(6, DIRECTION::RIGHT), 8},
+    {IndexDirection(7, DIRECTION::RIGHT), 5},
+    {IndexDirection(8, DIRECTION::RIGHT), 7},
+    
+    {IndexDirection(1, DIRECTION::UP), 0},
+    {IndexDirection(2, DIRECTION::UP), 0},
+    {IndexDirection(3, DIRECTION::UP), 1},
+    {IndexDirection(4, DIRECTION::UP), 0},
+    {IndexDirection(5, DIRECTION::UP), 2},
+    {IndexDirection(6, DIRECTION::UP), 3},
+    {IndexDirection(7, DIRECTION::UP), 5},
+    {IndexDirection(8, DIRECTION::UP), 4},
+
+    {IndexDirection(0, DIRECTION::DOWN), 4},
+    {IndexDirection(1, DIRECTION::DOWN), 3},
+    {IndexDirection(2, DIRECTION::DOWN), 5},
+    {IndexDirection(3, DIRECTION::DOWN), 6},
+    {IndexDirection(4, DIRECTION::DOWN), 8},
+    {IndexDirection(5, DIRECTION::DOWN), 7},
+    {IndexDirection(6, DIRECTION::DOWN), 8},
+    {IndexDirection(7, DIRECTION::DOWN), 8},
+};
+
+const std::unordered_map<IndexDirection, int> LIFEPOINTTRANSLATE = {
+    {IndexDirection(1, DIRECTION::LEFT), 0},
+    {IndexDirection(2, DIRECTION::LEFT), 1},
+    {IndexDirection(3, DIRECTION::LEFT), 0},
+    {IndexDirection(4, DIRECTION::LEFT), 3},
+    {IndexDirection(5, DIRECTION::LEFT), 4},
+    {IndexDirection(7, DIRECTION::LEFT), 6},
+    {IndexDirection(8, DIRECTION::LEFT), 7},
+
+    {IndexDirection(0, DIRECTION::RIGHT), 1},
+    {IndexDirection(1, DIRECTION::RIGHT), 2},
+    {IndexDirection(3, DIRECTION::RIGHT), 4},
+    {IndexDirection(4, DIRECTION::RIGHT), 5},
+    {IndexDirection(5, DIRECTION::RIGHT), 8},
+    {IndexDirection(6, DIRECTION::RIGHT), 7},
+    {IndexDirection(7, DIRECTION::RIGHT), 8},
+
+    {IndexDirection(3, DIRECTION::UP), 1},
+    {IndexDirection(4, DIRECTION::UP), 1},
+    {IndexDirection(5, DIRECTION::UP), 4},
+    {IndexDirection(6, DIRECTION::UP), 0},
+    {IndexDirection(7, DIRECTION::UP), 4},
+    {IndexDirection(8, DIRECTION::UP), 5},
+
+    {IndexDirection(0, DIRECTION::DOWN), 6},
+    {IndexDirection(1, DIRECTION::DOWN), 4},
+    {IndexDirection(2, DIRECTION::DOWN), 8},
+    {IndexDirection(3, DIRECTION::DOWN), 4},
+    {IndexDirection(4, DIRECTION::DOWN), 7},
+    {IndexDirection(5, DIRECTION::DOWN), 7},
+};
 
 #endif

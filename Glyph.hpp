@@ -35,9 +35,11 @@ public:
 
     bool mirror;
 
+    int position_index;
+
     // full glyphs are drawn incrementally
     Glyph(Gesture g, bool m)
-    : gesture(g), prev_valid(false), scale(1), rotation(0), translation_active(false), scale_active(false), rotation_active(false), complete(false), mirror(m)
+    : gesture(g), prev_valid(false), scale(1), rotation(0), translation_active(false), scale_active(false), rotation_active(false), complete(false), mirror(m), position_index(4)
     {
         render_texture.create(2.2*GLYPH_SCALE, 2.2*GLYPH_SCALE);
         render_texture.setSmooth(true);
@@ -208,6 +210,27 @@ public:
             return;
         rotation_active = true;
         rotation_interp = Interp1D(rotation, rotation+end, time, InterpType::CubicBezier);
+    }
+
+    void move(DIRECTION dirc, Glyph* base, double time=GLYPH_TRANSLATE_TIME)
+    {
+        if (translation_active)
+            return;
+        Vector end;
+        int pp = position_index;
+        try
+        {
+            int p;
+            end = GESTURE_INDEXDIR_TO_POINT(base->gesture, IndexDirection(position_index, dirc), &p);
+            position_index = p;
+        }
+        catch(std::out_of_range out)
+        {
+            return;
+        }
+        translation_active = true;
+        end *= base->scale*GLYPH_SCALE;
+        translation_interp = Interp2D(translation, end, time, InterpType::CubicBezier);
     }
 };
 

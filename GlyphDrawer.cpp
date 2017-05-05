@@ -75,14 +75,41 @@ void GlyphDrawer::notify_hold(Hand* hand)
         if (! (other->current_glyph && is_drawable(other_hand[hand]->gesture)))
             return;
         hand_data[hand]->current_glyph = other->current_glyph;
+
         if (hand->gesture == Gesture::Rotate)
         {
             double end = 45;
+            if (hand_data[hand]->current_glyph->gesture == Gesture::Fire)
+                end = 30;
             if (hand == left_hand)
                 end *= -1;
             hand_data[hand]->current_glyph->set_rotation_interp(end);
         }
-        //TODO: Horz, Vert
+
+        // can only translate if we have a base glyph
+        if (glyphs.size() < 1 || !glyphs.front()->complete)
+        {
+            hand_data[hand]->current_glyph = NULL;
+            return;
+        }
+
+        if (hand->gesture == Gesture::Horz || hand->gesture == Gesture::Vert)
+        {
+            DIRECTION dirc;
+            if (hand->gesture == Gesture::Horz)
+            {
+                dirc = DIRECTION::LEFT;
+                if (hand == right_hand)
+                    dirc = DIRECTION::RIGHT;
+            }
+            else
+            {
+                dirc = DIRECTION::DOWN;
+                if (hand == right_hand)
+                    dirc = DIRECTION::UP;
+            }
+            hand_data[hand]->current_glyph->move(dirc, glyphs.front());
+        }
     }
 }
 
