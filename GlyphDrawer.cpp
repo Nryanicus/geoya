@@ -1,10 +1,10 @@
 #include "GlyphDrawer.hpp"
 
-GlyphDrawer::GlyphDrawer(sf::Texture* top_hand_tex)
+GlyphDrawer::GlyphDrawer(sf::Texture* tex)
 : position(BASE_POS)
 {
-    left_hand = new Hand(top_hand_tex, this, "TopBack", false);
-    right_hand = new Hand(top_hand_tex, this, "TopBack", true);
+    left_hand = new Hand(tex, this, false);
+    right_hand = new Hand(tex, this, true);
 
     left_hand_data.base_pos = LEFTHAND_POS;
     right_hand_data.base_pos = RIGHTHAND_POS;

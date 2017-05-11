@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     font.loadFromFile("LiberationMono-Regular.ttf");
 
     sf::Texture top_hand_tex;
-    top_hand_tex.loadFromFile("Sprites/TopSpriteSheet.png");
+    top_hand_tex.loadFromFile("Sprites/SpriteSheet.png");
 
     GlyphDrawer glyph_drawer(&top_hand_tex);
 

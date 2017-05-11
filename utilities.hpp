@@ -14,7 +14,7 @@ static bool is_drawable(Gesture g)
     return DRAWABLE_GESTURE.find(g) != DRAWABLE_GESTURE.end();
 }
 
-static std::string gesture_to_sprite(Gesture s)
+static std::string gesture_to_sprite(Gesture s, bool right=false)
 {
     if (s == Gesture::Air)
         return "Air";
@@ -28,8 +28,10 @@ static std::string gesture_to_sprite(Gesture s)
         return "Life";
     if (s == Gesture::Death)
         return "Death";
-    if (s == Gesture::Vert)
-        return "Vert";
+    if (s == Gesture::Vert && right)
+        return "Up";
+    if (s == Gesture::Vert && !right)
+        return "Down";
     if (s == Gesture::Horz)
         return "Horz";
     if (s == Gesture::Cast)
@@ -208,9 +210,9 @@ float angle_between(sf::Vector2f* v1, sf::Vector2f* v2);
 
 int random_int(int a, int b);
 
-sf::IntRect spritesheet_rect(std::string sprite, std::string frame);
+sf::IntRect spritesheet_rect(std::string frame);
 
-sf::Vector2f spritesheet_offset(std::string sprite, std::string frame);
+sf::Vector2f spritesheet_offset(std::string frame);
 
 namespace std{
     bool isfinite(Vector v);

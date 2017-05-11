@@ -70,7 +70,7 @@ private:
 
 public:
 
-    GlyphDrawer(sf::Texture* top_hand_tex);
+    GlyphDrawer(sf::Texture* tex);
 
     ~GlyphDrawer();
 

@@ -138,30 +138,14 @@ int random_int(int a, int b)
     return c;
 }
 
-sf::IntRect spritesheet_rect(std::string sprite, std::string frame)
+sf::IntRect spritesheet_rect(std::string frame)
 {
-    if (sprite == "TopBack")
-        return sf::IntRect(TopBackSpriteOffsets.at(sprite+frame).at(0), TopBackSpriteOffsets.at(sprite+frame).at(1), TopBackSpriteOffsets.at(sprite+frame).at(2), TopBackSpriteOffsets.at(sprite+frame).at(3));
-    else if (sprite == "Front")
-        return sf::IntRect(FrontSpriteOffsets.at(sprite+frame).at(0), FrontSpriteOffsets.at(sprite+frame).at(1), FrontSpriteOffsets.at(sprite+frame).at(2), FrontSpriteOffsets.at(sprite+frame).at(3));
-    else
-    {
-        assert (false);
-        return sf::IntRect(0,0,0,0);
-    }
+    return sf::IntRect(SpriteOffsets.at(frame).at(0), SpriteOffsets.at(frame).at(1), SpriteOffsets.at(frame).at(2), SpriteOffsets.at(frame).at(3));
 }
 
-sf::Vector2f spritesheet_offset(std::string sprite, std::string frame)
+sf::Vector2f spritesheet_offset(std::string frame)
 {
-    if (sprite == "TopBack")
-        return sf::Vector2f(TopBackSpriteOffsets.at(sprite+frame).at(4), TopBackSpriteOffsets.at(sprite+frame).at(5));
-    else if (sprite == "Front")
-        return sf::Vector2f(FrontSpriteOffsets.at(sprite+frame).at(4), FrontSpriteOffsets.at(sprite+frame).at(5));
-    else
-    {
-        assert (false);
-        return sf::Vector2f(0, 0);
-    }
+    return sf::Vector2f(SpriteOffsets.at(frame).at(4), SpriteOffsets.at(frame).at(5));
 }
 
 namespace std {

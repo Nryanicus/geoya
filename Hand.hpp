@@ -21,7 +21,6 @@ public:
     GlyphDrawer* parent;
 
     bool right;
-    std::string angle;
 
     std::vector<FingerState> finger_states;
     std::vector<double> finger_times;
@@ -40,7 +39,7 @@ public:
 
     Vector position;
 
-    Hand(sf::Texture* tex, GlyphDrawer* parent, std::string angle, bool right);
+    Hand(sf::Texture* tex, GlyphDrawer* parent, bool right);
 
     void draw(sf::RenderTarget* target);
 

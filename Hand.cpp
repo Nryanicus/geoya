@@ -1,7 +1,7 @@
 #include "Hand.hpp"
 
-Hand::Hand(sf::Texture* tex, GlyphDrawer* parent, std::string angle, bool right)
-: right(right), angle(angle), parent(parent)
+Hand::Hand(sf::Texture* tex, GlyphDrawer* parent, bool right)
+: right(right), parent(parent)
 {
     working.setTexture(*tex);
     canvas.create(1000, 1000);
@@ -14,7 +14,7 @@ Hand::Hand(sf::Texture* tex, GlyphDrawer* parent, std::string angle, bool right)
     for (int i=0; i< NUM_FINGERS; i++)
     {
         finger_times.push_back(0);
-        finger_frames.push_back(4);
+        finger_frames.push_back(MAX_FRAMES);
         finger_states.push_back(FingerState::Opening);
     }
 }
@@ -30,19 +30,19 @@ void Hand::draw(sf::RenderTarget* target)
             for (int i=0; i<NUM_FINGERS; i++)
             {
                 std::string sprite = std::to_string(i)+"Close"+std::to_string(finger_frames[i]+1);
-                working.setTextureRect(spritesheet_rect(angle, sprite));
-                working.setPosition(spritesheet_offset(angle, sprite));
+                working.setTextureRect(spritesheet_rect(sprite));
+                working.setPosition(spritesheet_offset(sprite));
                 canvas.draw(working);
             }
-            working.setTextureRect(spritesheet_rect(angle, "Palm"));
-            working.setPosition(spritesheet_offset(angle, "Palm"));
+            working.setTextureRect(spritesheet_rect("Palm"));
+            working.setPosition(spritesheet_offset("Palm"));
             canvas.draw(working);
         }
         else 
         {
-            std::string sprite = gesture_to_sprite(gesture) + std::to_string(hand_frame+1);
-            working.setTextureRect(spritesheet_rect(angle, sprite));
-            working.setPosition(spritesheet_offset(angle, sprite));
+            std::string sprite = gesture_to_sprite(gesture, right) + std::to_string(hand_frame+1);
+            working.setTextureRect(spritesheet_rect(sprite));
+            working.setPosition(spritesheet_offset(sprite));
             canvas.draw(working);
         }
         // update canvas

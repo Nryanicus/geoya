@@ -6,6 +6,7 @@ debug
 main
 *.py
 *.blend
+*.blend*
 Concepts/
 __pycache__/
 BUGS
